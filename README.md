@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @ajmalmuhammed2012
-- 👀 I’m interested in Tech, Stocks, NFT, BlockChain, StableDiffusion, AIModel, DotNET, FullStack
-- 🌱 I’m currently learning Angular + .NET
+- 👀 I’m interested in Tech- AIModel, DotNET, FullStack, Stocks, NFT, BlockChain
+- 🌱 I’m learning.....
 - 📫 Website: https://ajmalmuhammed2012.github.io/ajmalmuhammed2012/
 
 <!---
