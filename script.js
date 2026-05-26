@@ -173,13 +173,15 @@ if (canvas) {
 
 // Fixed Scroll Reveal Intersection Observer Execution Pipeline
 document.addEventListener("DOMContentLoaded", () => {
+  // 1. Instantly toggle flag class to signal active engine parameters before calculating bounds
+  document.documentElement.classList.add("js-enabled");
+
   const revealElements = document.querySelectorAll(".scroll-reveal");
 
   if (revealElements.length > 0) {
     const observerOptions = {
       root: null,
-      // Increased bottom threshold offset to ensure scrolling remains natural and smooth
-      rootMargin: "0px 0px -15% 0px", 
+      rootMargin: "0px 0px -10% 0px", 
       threshold: 0.05
     };
 
@@ -187,16 +189,16 @@ document.addEventListener("DOMContentLoaded", () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("reveal-active");
-          observer.unobserve(entry.target);
+          revealObserver.unobserve(entry.target);
         }
       });
     }, observerOptions);
 
-    // Staggered initialization switch prevents layout initialization collisions on load
+    // 2. Timeout gate ensures browser paints layout space before observer initializes tracking bounds
     setTimeout(() => {
       revealElements.forEach((element) => {
         revealObserver.observe(element);
       });
-    }, 150);
+    }, 200);
   }
 });
