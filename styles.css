@@ -177,10 +177,10 @@ a {
   background-color: var(--ink);
 }
 
-/* --- HERO SECTION WITH INTEGRATED LIQUID REFRACTION --- */
+/* --- HERO SECTION WITH HIGH-TRANSPARENCY LIQUID GLASS --- */
 .hero {
   position: relative;
-  min-height: 85svh;
+  min-height: 80svh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -197,27 +197,26 @@ a {
   opacity: var(--canvas-opacity);
 }
 
-/* Premium Web-Refraction Mask overlaying the canvas layers */
+/* Re-engineered High-Transparency Fluid Glass Plane */
 .hero-shade {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
   
-  /* Subtle light reflection sheen that looks exceptional in both light & dark mode */
+  /* Crystal-clear high transparency linear lighting mix */
   background: linear-gradient(
     135deg, 
-    rgba(255, 255, 255, 0.03) 0%, 
+    rgba(255, 255, 255, 0.015) 0%, 
     rgba(255, 255, 255, 0) 50%, 
-    rgba(0, 0, 0, 0.02) 100%
+    rgba(0, 0, 0, 0.01) 100__%
   );
   
-  /* Liquid Glass Distortion Matrix across the background */
-  backdrop-filter: blur(2px) saturate(110%);
-  -webkit-backdrop-filter: blur(2px) saturate(110%);
+  /* Lower blur coefficient maximizes transparency while preserving liquid glass refraction */
+  backdrop-filter: blur(1px) saturate(120%);
+  -webkit-backdrop-filter: blur(1px) saturate(120%);
 }
 
-/* Ensure your hero text layer floats on top of the glass reflection */
 .hero-content {
   position: relative;
   z-index: 2; 
