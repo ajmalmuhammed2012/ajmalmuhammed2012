@@ -80,6 +80,7 @@ a {
 }
 
 /* --- SITE TOP FLOATING GLASS BAR --- */
+/* --- SITE FLOATING HEADER CONTROLLER --- */
 .site-header {
   position: fixed;
   top: 12px;
@@ -89,7 +90,19 @@ a {
   display: flex;
   justify-content: center;
   height: 48px;
-  pointer-events: none; /* Allows canvas calculation pass-through */
+  pointer-events: none;
+  
+  /* ---> LOCK INITIAL INVISIBILITY BALANCES <--- */
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---> THE HERO SCROLL ENTRY TOGGLE <--- */
+.header-visible .site-header {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .header-inner {
