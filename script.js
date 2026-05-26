@@ -1,4 +1,4 @@
-// 1. HARD CODED LAYER OVERRIDES FOR REFRESH SNAPPING
+// 1. ANCHOR & BLINK SUPPRESSION GUARD (Executes instantly to prevent flash bounds)
 if (window.history && history.scrollRestoration) {
   history.scrollRestoration = 'manual';
 }
@@ -15,7 +15,7 @@ window.addEventListener('beforeunload', () => {
 });
 
 
-// 2. DYNAMIC TIMING HOOKS
+// 2. TIMING METRIC CONTEXT COMPILING
 document.addEventListener("DOMContentLoaded", () => {
   const year = document.querySelector("#year");
   if (year) {
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// 3. COLOR CAPABILITIES TRANSITIONS AND MENU STATE CHANNELS
+// 3. COLOR SYSTEM MANAGEMENT MATRICES
 const themeToggle = document.querySelector("#theme-toggle");
 const rootElement = document.documentElement;
 
@@ -48,6 +48,7 @@ if (themeToggle) {
   });
 }
 
+// Mobile Slide Menu Interface
 const menuToggle = document.querySelector(".menu-toggle");
 const siteHeader = document.querySelector(".site-header");
 const navLinks = document.querySelectorAll(".nav-links a");
@@ -67,7 +68,7 @@ if (menuToggle && siteHeader) {
 }
 
 
-// 4. THE INTERACTIVE ANTIGRAVITY STAR FIELD CANVAS ENG
+// 4. HIGH-DENSITY INTERACTIVE ANTIGRAVITY ENGINE
 const canvas = document.querySelector("#antigravity-canvas");
 if (canvas) {
   const ctx = canvas.getContext("2d");
@@ -192,31 +193,32 @@ if (canvas) {
 }
 
 
-// 5. CINEMATIC SCROLL EVENT CONTROLLER (CHANGES HEADLINE TEXT & VISIBLE NAVBAR SLIDES)
+// 5. FLUID HIGH-FIDELITY FLUID SCROLL NARRATIVE CHOREOGRAPHY TIMELINE
 window.addEventListener('scroll', () => {
-  const heroSection = document.querySelector('.cinematic-hero');
-  const headline = document.getElementById('dynamic-headline');
+  const container = document.getElementById('timeline-hero');
   const scrollPosition = window.scrollY;
-  
-  if (heroSection && headline) {
-    if (scrollPosition > 60) {
-      if (!heroSection.classList.contains('js-morphed')) {
-        heroSection.classList.add('js-morphed');
-        document.documentElement.classList.add('header-visible');
-        headline.textContent = "Software Developer";
-      }
-    } else {
-      if (heroSection.classList.contains('js-morphed')) {
-        heroSection.classList.remove('js-morphed');
-        document.documentElement.classList.remove('header-visible');
-        headline.textContent = "Ajmal Muhammed";
-      }
+
+  if (container) {
+    // Stage 1 -> Stage 2 Threshold (Swaps text layers)
+    if (scrollPosition > 80 && scrollPosition <= 240) {
+      container.className = "hero stage-2";
+      document.documentElement.classList.remove('header-visible');
+    } 
+    // Stage 2 -> Stage 3 Threshold (Left snaps name layout line and slides down header capsule)
+    else if (scrollPosition > 240) {
+      container.className = "hero stage-3";
+      document.documentElement.classList.add('header-visible');
+    } 
+    // Reset to absolute zero baseline launch loop
+    else {
+      container.className = "hero stage-1";
+      document.documentElement.classList.remove('header-visible');
     }
   }
 }, { passive: true });
 
 
-// 6. DEFERRED SECTIONS OBSERVER REVEAL INTERCEPT
+// 6. STABILIZED DELAYED SECTIONS REVEAL INTERCEPT
 const revealElements = document.querySelectorAll(".scroll-reveal");
 
 if (revealElements.length > 0) {
@@ -241,5 +243,5 @@ if (revealElements.length > 0) {
     revealElements.forEach((element) => {
       revealObserver.observe(element);
     });
-  }, 350);
+  }, 400);
 }
