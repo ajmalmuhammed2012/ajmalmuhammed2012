@@ -241,12 +241,12 @@ a {
   pointer-events: none;
   background: linear-gradient(
     135deg, 
-    rgba(255, 255, 255, 0.0005) 0%, 
+    rgba(255, 255, 255, 0.005) 0%, 
     rgba(255, 255, 255, 0) 50%, 
     rgba(0, 0, 0, 0.02) 100__%
   );
   backdrop-filter: blur(0.005px) saturate(125%);
-  -webkit-backdrop-filter: blur(2px) saturate(125%);
+  -webkit-backdrop-filter: blur(0.005px) saturate(125%);
 }
 
 .hero-content {
