@@ -1,120 +1,204 @@
-// Dynamic Year
-const year = document.getElementById("year");
-
+// Year Sync Engine
+const year = document.querySelector("#year");
 if (year) {
   year.textContent = new Date().getFullYear();
 }
 
-// Theme Toggle
-const root = document.documentElement;
-const themeToggle = document.getElementById("theme-toggle");
+// Light & Dark Mode System Interface Controller
+const themeToggle = document.querySelector("#theme-toggle");
+const rootElement = document.documentElement;
+
+const getCanvasColors = () => {
+  const isDarkMode = rootElement.getAttribute("data-theme") === "dark";
+  return {
+    nodeRest: isDarkMode ? "rgba(45, 226, 206, 0.95)" : "rgba(20, 165, 150, 0.95)",
+    nodeHover: isDarkMode ? "rgba(255, 110, 0, 1)" : "rgba(230, 85, 0, 1)",
+    line: isDarkMode ? "rgba(45, 226, 206, 0.25)" : "rgba(20, 165, 150, 0.18)"
+  };
+};
+
+let canvasColors = getCanvasColors();
 
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
-    const currentTheme = root.getAttribute("data-theme");
-
-    root.setAttribute(
-      "data-theme",
-      currentTheme === "dark" ? "light" : "dark"
-    );
+    const currentTheme = rootElement.getAttribute("data-theme");
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+    rootElement.setAttribute("data-theme", nextTheme);
+    canvasColors = getCanvasColors();
   });
 }
 
-// Mobile Menu
+// Hamburger Toggle Setup
 const menuToggle = document.querySelector(".menu-toggle");
-const header = document.querySelector(".site-header");
+const siteHeader = document.querySelector(".site-header");
+const navLinks = document.querySelectorAll(".nav-links a");
 
-if (menuToggle && header) {
+if (menuToggle && siteHeader) {
   menuToggle.addEventListener("click", () => {
-    header.classList.toggle("menu-open");
+    const isOpen = siteHeader.classList.toggle("menu-is-open");
+    menuToggle.setAttribute("aria-expanded", isOpen);
+  });
+
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      siteHeader.classList.remove("menu-is-open");
+      menuToggle.setAttribute("aria-expanded", "false");
+    });
   });
 }
 
-// Hero Canvas
-const canvas = document.getElementById("antigravity-canvas");
-
+// Antigravity Organic Cluster Constellation Logic
+const canvas = document.querySelector("#antigravity-canvas");
 if (canvas) {
-
   const ctx = canvas.getContext("2d");
-
-  let width;
-  let height;
-
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const pointer = { active: false, x: 0, y: 0 };
   const particles = [];
+  let width = 0;
+  let height = 0;
+  let animationFrame = 0;
 
   const resizeCanvas = () => {
-
-    width = canvas.offsetWidth;
-    height = canvas.offsetHeight;
-
-    canvas.width = width;
-    canvas.height = height;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     particles.length = 0;
+    const totalParticles = width < 680 ? 40 : 75;
 
-    const total = width < 768 ? 18 : 34;
-
-    for (let i = 0; i < total; i++) {
-
+    for (let i = 0; i < totalParticles; i++) {
+      const homeX = Math.random() * width;
+      const homeY = Math.random() * height;
       particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        size: Math.random() * 2 + 1
+        homeX: homeX,
+        homeY: homeY,
+        x: homeX,
+        y: homeY,
+        vx: 0,
+        vy: 0,
+        baseSize: 4.5,
+        size: 4.5,
+        phase: Math.random() * Math.PI * 2,
+        isHovered: false
       });
     }
   };
 
-  const animate = () => {
-
+  const draw = (time = 0) => {
     ctx.clearRect(0, 0, width, height);
+    const pointerRadius = Math.min(240, width * 0.32);
+
+    particles.forEach((particle) => {
+      const driftX = Math.cos(time * 0.00015 + particle.phase) * 12;
+      const driftY = Math.sin(time * 0.00015 + particle.phase) * 12;
+      const targetX = particle.homeX + driftX;
+      const targetY = particle.homeY + driftY;
+
+      particle.isHovered = false;
+      particle.size = particle.baseSize;
+
+      if (pointer.active) {
+        const dx = pointer.x - particle.x;
+        const dy = pointer.y - particle.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        
+        if (dist < pointerRadius) {
+          particle.isHovered = true;
+          particle.size = particle.baseSize + (1 - dist / pointerRadius) * 1.5; 
+          
+          const force = (1 - dist / pointerRadius) * 2.0;
+          const angle = Math.atan2(dy, dx);
+          particle.vx -= Math.cos(angle) * force;
+          particle.vy -= Math.sin(angle) * force;
+        }
+      }
+
+      particle.vx += (targetX - particle.x) * 0.015;
+      particle.vy += (targetY - particle.y) * 0.015;
+      particle.vx *= 0.84;
+      particle.vy *= 0.84;
+      particle.x += particle.vx;
+      particle.y += particle.vy;
+    });
+
+    const maxLinkDistance = width < 680 ? 100 : 140;
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = canvasColors.line;
 
     for (let i = 0; i < particles.length; i++) {
-
-      const p = particles[i];
-
-      p.x += p.vx;
-      p.y += p.vy;
-
-      if (p.x < 0 || p.x > width) p.vx *= -1;
-      if (p.y < 0 || p.y > height) p.vy *= -1;
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-
-      ctx.fillStyle = "rgba(41,151,255,0.9)";
-      ctx.fill();
-
       for (let j = i + 1; j < particles.length; j++) {
-
+        const p1 = particles[i];
         const p2 = particles[j];
-
-        const dx = p.x - p2.x;
-        const dy = p.y - p2.y;
-
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 120) {
-
+        const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+        
+        if (dist < maxLinkDistance) {
           ctx.beginPath();
-
-          ctx.moveTo(p.x, p.y);
+          ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
-
-          ctx.strokeStyle = "rgba(41,151,255,0.08)";
-          ctx.lineWidth = 0.6;
-
           ctx.stroke();
         }
       }
     }
 
-    requestAnimationFrame(animate);
+    particles.forEach((particle) => {
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+      ctx.fillStyle = particle.isHovered ? canvasColors.nodeHover : canvasColors.nodeRest;
+      ctx.fill();
+    });
+
+    if (!reduceMotion.matches) {
+      animationFrame = window.requestAnimationFrame(draw);
+    }
+  };
+
+  const updatePointer = (event) => {
+    const rect = canvas.getBoundingClientRect();
+    pointer.active = true;
+    pointer.x = event.clientX - rect.left;
+    pointer.y = event.clientY - rect.top;
   };
 
   resizeCanvas();
-  animate();
+  draw();
 
   window.addEventListener("resize", resizeCanvas);
+  window.addEventListener("pointermove", updatePointer, { passive: true });
+  window.addEventListener("pointerleave", () => { pointer.active = false; });
 }
+
+// Fixed Scroll Reveal Intersection Observer Execution Pipeline
+document.addEventListener("DOMContentLoaded", () => {
+  const revealElements = document.querySelectorAll(".scroll-reveal");
+
+  if (revealElements.length > 0) {
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px 0px -10% 0px", 
+      threshold: 0.05
+    };
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-active");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Delaying both the flag class AND the observer activation allows the hero 
+    // to load completely alone before lower sections are hidden and monitored.
+    setTimeout(() => {
+      document.documentElement.classList.add("js-enabled");
+      
+      revealElements.forEach((element) => {
+        revealObserver.observe(element);
+      });
+    }, 250);
+  }
+});
