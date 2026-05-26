@@ -235,23 +235,20 @@ a {
 
 /* Premium High-Transparency Liquid Refraction Overlay */
 /* --- HERO HIGH-TRANSPARENCY GLASS REFRACTION MASK --- */
-.hero-shade {
+/* --- FORCE HYPER-SHARP RENDER MODE FOR SAFARI --- */
+.hero-canvas {
   position: absolute;
   inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  
-  /* Upgraded specular gradient mix: drives consistent high-fidelity luxury depth */
-  background: linear-gradient(
-    135deg, 
-    rgba(255, 255, 255, 0.02) 0%, 
-    rgba(255, 255, 255, 0) 40%, 
-    rgba(0, 0, 0, 0.03) 100%
-  );
-  
-  /* Removed active backdrop blurs to guarantee hyper-sharp constellation rendering in Safari */
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: var(--canvas-opacity);
+
+  /* ---> ADD THESE FOUR LINES BELOW TO KILL THE SAFARI BLUR <--- */
+  image-rendering: -webkit-optimize-contrast; /* WebKit specific contrast override */
+  image-rendering: crisp-edges;               /* Standard sharp rendering */
+  transform: translateZ(0);                   /* Hard-forces a dedicated layer pass */
+  -webkit-transform: translateZ(0);           /* Legacy Safari engine anchor */
 }
 
 .hero-content {
