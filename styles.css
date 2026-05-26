@@ -1,52 +1,45 @@
-
 /* --- UNIVERSAL SYSTEM DESIGN TOKENS --- */
 :root[data-theme="light"] {
-  --bg: #f5f5f7;                   /* Premium Apple gray background canvas */
+  --bg: #f5f5f7;                   
   --bg-subtle: #ffffff;
-  --bg-canvas: #fbfbfd;
+  --bg-canvas: #fcfcfd;            
   --ink: #1d1d1f;
   --muted: #6e6e73;
-  --line: rgba(0, 0, 0, 0.08);
+  --line: rgba(0, 0, 0, 0.06);
   
-  /* High-Fidelity Refraction Planes */
-  --glass: rgba(255, 255, 255, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.4);
-  --glass-specular: rgba(255, 255, 255, 0.6);
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-specular: rgba(255, 255, 255, 0.8);
   
-  /* Antigravity Luminescent Core Channels */
-  --accent: #14a596;              /* Constellation particle resting teal */
-  --accent-glow: rgba(20, 165, 150, 0.25);
-  --accent-hover: #e65500;         /* Constellation particle hyper-hover orange */
-  --accent-hover-glow: rgba(230, 85, 0, 0.35);
+  --accent: #14a596;              
+  --accent-glow: rgba(20, 165, 150, 0.2);
+  --accent-hover: #e65500;         
+  --accent-hover-glow: rgba(230, 85, 0, 0.3);
   
-  --card-bg: rgba(255, 255, 255, 0.45);
-  --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
-  --radius-apple: 24px;            /* Elite structural curved frame signature */
-  --canvas-opacity: 0.6;
+  --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.02);
+  --radius-apple: 24px;            
+  --canvas-opacity: 0.55;
 }
 
 :root[data-theme="dark"] {
   --bg: #000000;
-  --bg-subtle: #161617;
-  --bg-canvas: #0a0a0c;
+  --bg-subtle: #0d0d0f;            
+  --bg-canvas: #050507;
   --ink: #f5f5f7;
   --muted: #86868b;
-  --line: rgba(255, 255, 255, 0.08);
+  --line: rgba(255, 255, 255, 0.07);
   
-  /* Premium Liquid Refraction Planes */
-  --glass: rgba(10, 10, 12, 0.55);
+  --glass: rgba(10, 10, 12, 0.5);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-specular: rgba(255, 255, 255, 0.04);
   
-  /* Antigravity Luminescent Core Channels */
-  --accent: #2de2ce;              /* Constellation particle resting teal */
-  --accent-glow: rgba(45, 226, 206, 0.35);
-  --accent-hover: #ff7600;         /* Constellation particle hyper-hover orange */
-  --accent-hover-glow: rgba(255, 118, 0, 0.55);
+  --accent: #2de2ce;              
+  --accent-glow: rgba(45, 226, 206, 0.25);
+  --accent-hover: #ff7600;         
+  --accent-hover-glow: rgba(255, 118, 0, 0.45);
   
-  --card-bg: rgba(22, 22, 23, 0.4);
-  --card-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7);
-  --radius-apple: 24px;            /* Elite structural curved frame signature */
+  --card-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.65);
+  --radius-apple: 24px;            
   --canvas-opacity: 0.85;
 }
 
@@ -67,7 +60,7 @@ body {
   overflow-x: hidden;
   background-color: var(--bg);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
   line-height: 1.47059;
   letter-spacing: -0.022em;
   transition: background-color 0.4s ease, color 0.3s ease;
@@ -79,8 +72,7 @@ a {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* --- SITE TOP FLOATING GLASS BAR --- */
-/* --- SITE FLOATING HEADER CONTROLLER --- */
+/* --- SITE TOP FLOATING NAVIGATION CAPSULE --- */
 .site-header {
   position: fixed;
   top: 12px;
@@ -92,14 +84,12 @@ a {
   height: 48px;
   pointer-events: none;
   
-  /* ---> LOCK INITIAL INVISIBILITY BALANCES <--- */
   opacity: 0;
   transform: translateY(-20px);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ---> THE HERO SCROLL ENTRY TOGGLE <--- */
 .header-visible .site-header {
   opacity: 1;
   transform: translateY(0);
@@ -113,8 +103,6 @@ a {
   max-width: 1024px;
   padding: 0 24px;
   pointer-events: auto;
-  
-  /* Elite Apple Fluid-Glass execution capsule */
   background: var(--glass);
   border: 1px solid var(--glass-border);
   box-shadow: var(--card-shadow), inset 0 1px 1px var(--glass-specular);
@@ -123,7 +111,7 @@ a {
   -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
-/* --- LUXURY SCIFI BRAND COMPOSITION --- */
+/* --- BRAND COMPOSITION --- */
 .brand {
   display: flex;
   align-items: center;
@@ -131,7 +119,6 @@ a {
   cursor: pointer;
 }
 
-/* The interactive luminescent core icon */
 .brand .brand-node {
   font-weight: 700;
   font-size: 0.7rem;
@@ -141,23 +128,13 @@ a {
   height: 26px;
   display: grid;
   place-items: center;
-  
-  /* Liquid Glass Signature Blueprint */
   background: var(--glass);
   border: 1px solid var(--accent);
-  border-radius: 8px; /* Smooth premium curve */
+  border-radius: 8px; 
   box-shadow: 0 0 10px var(--accent-glow), inset 0 1px 0 var(--glass-specular);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Rebuilt Typographic Imprint */
-.brand-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
 }
 
 .brand-main {
@@ -168,31 +145,12 @@ a {
   transition: color 0.3s ease;
 }
 
-.brand-sub {
-  font-size: 0.55rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--accent);
-  margin-top: 2px;
-  transition: color 0.3s ease;
-}
-
-/* --- THE KINETIC HOVER TRIGGER --- */
 .brand:hover .brand-node {
   border-color: var(--accent-hover);
   background: var(--accent-hover);
   color: #ffffff;
   box-shadow: 0 0 18px var(--accent-hover-glow);
   transform: scale(1.05) rotate(-4deg);
-}
-
-.brand:hover .brand-main {
-  color: var(--ink);
-}
-
-.brand:hover .brand-sub {
-  color: var(--accent-hover);
 }
 
 .nav-links {
@@ -274,12 +232,13 @@ a {
   background-color: var(--ink);
 }
 
-/* --- HERO COMPOSITION --- */
+/* --- THE CINEMATIC HERO MATRICES --- */
 .hero {
   position: relative;
-  min-height: 85svh;
+  min-height: 100svh;               
   display: flex;
   align-items: center;
+  justify-content: center;
   overflow: hidden;
   background: var(--bg-canvas);
   border-bottom: 1px solid var(--line);
@@ -292,18 +251,25 @@ a {
   height: 100%;
   z-index: 0;
   opacity: var(--canvas-opacity);
+  image-rendering: -webkit-optimize-contrast; 
+  image-rendering: crisp-edges;               
+  transform: translateZ(0);                   
+  -webkit-transform: translateZ(0);           
 }
 
-/* Premium High-Transparency Liquid Refraction Overlay */
-/* --- HERO HIGH-TRANSPARENCY GLASS REFRACTION MASK --- */
-/* --- FORCE HYPER-SHARP RENDER MODE FOR SAFARI --- */
-.hero-canvas {
+.hero-shade {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  opacity: var(--canvas-opacity);
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.02) 0%, 
+    rgba(255, 255, 255, 0) 40%, 
+    rgba(0, 0, 0, 0.03) 100%
+  );
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .hero-content {
@@ -312,36 +278,49 @@ a {
   width: 100%;
   max-width: 1024px;
   margin: 0 auto;
-  padding: 120px 24px 40px;
-}
-
-.kicker {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--accent);
-  margin-bottom: 16px;
+  padding: 130px 24px 40px;
 }
 
 .hero h1 {
-  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-size: clamp(3rem, 8vw, 5.5rem); 
   font-weight: 700;
-  line-height: 1.07143;
-  letter-spacing: -0.035em;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
   margin: 0;
+  text-align: center;
+  will-change: transform, opacity;
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-reveal-block {
+  opacity: 0;
+  transform: translateY(24px);
+  margin-top: 36px;                 /* Precision breathing padding offset */
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, 
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+
+/* --- CINEMATIC TRANSITION STATES --- */
+.js-morphed h1 {
+  font-size: clamp(2.4rem, 6vw, 4.2rem) !important;
+  text-align: left !important;
+  letter-spacing: -0.035em !important;
+}
+
+.js-morphed .hero-reveal-block {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .hero-copy {
   max-width: 600px;
-  margin: 28px 0 0;
+  margin: 0;
   color: var(--muted);
   font-size: 1.35rem;
-  line-height: 1.5;
-  font-weight: 400;
+  line-height: 1.55;
 }
 
-/* --- ULTRA-FUTURISTIC LIQUID GLASS BUTTON SYSTEMS --- */
+/* --- FUTURISTIC LIQUID GLASS BUTTONS --- */
 .hero-actions-row, .project-links {
   display: flex;
   align-items: center;
@@ -356,10 +335,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 14px 32px;
-  
-  /* Fluid curved borders matching original Apple layout parameters */
-  border-radius: var(--radius-apple);
-  
+  border-radius: var(--radius-apple); 
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   display: inline-flex;
@@ -367,7 +343,6 @@ a {
   justify-content: center;
 }
 
-/* Liquid Antigravity Floating Pod Style Button */
 .button.primary {
   background: var(--glass);
   border: 1px solid var(--accent);
@@ -385,7 +360,6 @@ a {
   transform: translateY(-3px);
 }
 
-/* Translucent Airframe Secondary Button */
 .button.secondary {
   background: rgba(0, 0, 0, 0.02);
   border: 1px solid var(--glass-border);
@@ -434,7 +408,7 @@ a {
   font-weight: 500;
 }
 
-/* --- RUNNING HORF MARQUEE --- */
+/* --- THE RUNNING MARQUEE --- */
 .marquee {
   overflow: hidden;
   padding: 18px 0;
@@ -457,7 +431,7 @@ a {
   text-transform: uppercase;
 }
 
-/* --- SECTIONS SHELL CONTAINER --- */
+/* --- FRAME SECTION WRAPPERS --- */
 .section-shell {
   max-width: 1024px;
   margin: 0 auto;
@@ -474,7 +448,7 @@ a {
 .section-title-block h2, .section-title-block h3, h2, h3, h4 {
   font-size: clamp(2rem, 4.5vw, 2.8rem);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -0.03em;
   margin: 0;
 }
@@ -492,32 +466,40 @@ a {
   color: var(--ink);
   line-height: 1.55;
   margin: 0;
-  font-weight: 400;
 }
 
-/* --- HIGH-TECH HISTOGRAM NUMBERS --- */
-.stats-grid {
+/* --- LIQUID GLASS GLASS-CARD MATRICES (FORCE ROUNDED 24PX) --- */
+.glass-card {
+  background: rgba(255, 255, 255, 0.45) !important;
+  border-radius: var(--radius-apple) !important; 
+  border: 1px solid var(--glass-border) !important;
+  backdrop-filter: blur(16px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
+  box-shadow: var(--card-shadow), inset 0 1px 1px var(--glass-specular) !important;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-theme="dark"] .glass-card {
+  background: rgba(22, 22, 23, 0.45) !important;
+}
+
+.glass-card:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 12px 32px var(--accent-glow) !important;
+  transform: translateY(-4px) scale(1.01) !important;
+}
+
+.stats-grid, .ai-grid, .skills-grid, .recommendation-grid, .credentials-section {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
+  gap: 24px;
+  width: 100%;
 }
 
-.stats-grid article {
-  background: var(--card-bg);
-  border: 1px solid var(--glass-border);
-  padding: 32px 24px;
-  border-radius: var(--radius-apple); /* Fluid rounded curves */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: var(--card-shadow), inset 0 1px 0 var(--glass-specular);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
+.stats-grid { grid-template-columns: repeat(4, 1fr); }
+.ai-grid, .skills-grid, .recommendation-grid, .credentials-section { grid-template-columns: repeat(2, 1fr); }
 
-.stats-grid article:hover {
-  border-color: var(--accent);
-  box-shadow: 0 8px 24px var(--accent-glow);
-  transform: translateY(-4px);
-}
+.stats-grid article { padding: 32px 24px; }
+.ai-grid article, .skills-grid article, .quote-card, .education-block, .cert-block { padding: 32px; }
 
 .stat-number {
   font-size: 3.8rem;
@@ -534,52 +516,11 @@ a {
   line-height: 1.5;
 }
 
-/* --- INSANELY STYLISTIC LIQUID GLASS SYSTEM DATA CARDS --- */
-.ai-section {
-  background: var(--bg-canvas);
-  border-bottom: 1px solid var(--line);
-}
-
-.right-content-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  width: 100%;
-}
-
-.ai-grid, .skills-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  width: 100%;
-}
-
-.ai-grid article, .skills-grid article {
-  background: var(--card-bg);
-  padding: 32px;
-  
-  /* Seamless Liquid Glass Framing Pattern */
-  border-radius: var(--radius-apple);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(16px) saturate(120%);
-  -webkit-backdrop-filter: blur(16px) saturate(120%);
-  box-shadow: var(--card-shadow), inset 0 1px 1px var(--glass-specular);
-  
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.ai-grid article:hover, .skills-grid article:hover {
-  border-color: var(--accent);
-  box-shadow: 0 12px 32px var(--accent-glow);
-  transform: translateY(-4px) scale(1.01);
-}
-
 .skills-grid article h4 {
   font-size: 1.15rem;
   font-weight: 600;
   margin: 0 0 12px;
   color: var(--accent);
-  letter-spacing: -0.01em;
 }
 
 .tool-meta {
@@ -601,7 +542,6 @@ a {
 .tool-meta strong {
   font-size: 1.15rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
 }
 
 .ai-grid article p, .skills-grid article p {
@@ -616,6 +556,7 @@ a {
   flex-wrap: wrap;
   gap: 8px;
   width: 100%;
+  margin-top: 20px;
 }
 
 .outcome-pill, .tech-stack span {
@@ -623,18 +564,20 @@ a {
   padding: 6px 16px;
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-apple); /* Premium pill geometry profiles */
+  border-radius: var(--radius-apple); 
   color: var(--ink);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  box-shadow: inset 0 1px 0 var(--glass-specular);
 }
 
-/* --- EXPERIENTIAL CHRONOLOGY TIMELINE --- */
+/* --- TIMELINE SERIES CHANNEL --- */
+.ai-section {
+  background: var(--bg-canvas);
+  border-bottom: 1px solid var(--line);
+}
+
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: 56px;
+  gap: 32px;
   width: 100%;
 }
 
@@ -642,27 +585,6 @@ a {
   display: flex;
   flex-direction: column;
   padding: 32px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--radius-apple);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Featured item transforms cleanly into a focused liquid panel link row */
-.role-card.featured {
-  background: var(--card-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: var(--card-shadow), inset 0 1px 0 var(--glass-specular);
-}
-
-.role-card:hover {
-  background: var(--card-bg);
-  border-color: var(--glass-border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transform: translateX(4px);
 }
 
 .role-header {
@@ -671,12 +593,6 @@ a {
   align-items: flex-start;
   gap: 24px;
   margin-bottom: 18px;
-}
-
-.meta-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .role-header .company {
@@ -690,7 +606,6 @@ a {
 .role-header h3 {
   font-size: 1.4rem;
   font-weight: 600;
-  letter-spacing: -0.02em;
   margin: 0;
 }
 
@@ -707,30 +622,14 @@ a {
   background: rgba(255, 255, 255, 0.04);
 }
 
-.role-card p {
-  font-size: 1.15rem;
-  color: var(--muted);
-  line-height: 1.6;
-  margin: 0;
-}
+.role-card ul { margin: 16px 0 0; padding-left: 20px; color: var(--muted); }
+.role-card li { margin-bottom: 10px; font-size: 1.1rem; }
 
-.role-card ul {
-  margin: 0;
-  padding-left: 20px;
-  color: var(--muted);
-}
-
-.role-card li {
-  margin-bottom: 10px;
-  font-size: 1.1rem;
-  line-height: 1.5;
-}
-
-/* --- OPEN SOURCE COMPACT CASE TILES --- */
+/* --- PROJECTS COMPONENT HOUSINGS --- */
 .project-showcase {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
   width: 100%;
 }
 
@@ -741,48 +640,14 @@ a {
   margin: 0;
 }
 
-/* --- PREMIUM REFRACTION LIQUID TESTIMONIAL DISPLAY MATRIX --- */
+/* --- TESTIMONIAL DISPLAY MATRIX --- */
 .proof-section {
   background: var(--bg-subtle);
   border-bottom: 1px solid var(--line);
 }
 
-.recommendation-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-}
-
-.quote-card {
-  background: var(--card-bg);
-  border: 1px solid var(--glass-border);
-  padding: 40px;
-  
-  /* Insanely Stylistic Deep Fluid Refraction execution */
-  border-radius: var(--radius-apple);
-  backdrop-filter: blur(24px) saturate(130%);
-  -webkit-backdrop-filter: blur(24px) saturate(130%);
-  box-shadow: var(--card-shadow), inset 0 1px 1px var(--glass-specular);
-  
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.quote-card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 16px 40px var(--accent-glow);
-  transform: translateY(-6px);
-}
-
-.quote-card p {
-  font-size: 1.05rem;
-  line-height: 1.6;
-  color: var(--ink);
-  margin: 0 0 28px;
-  font-weight: 400;
-}
+.section-heading { margin-bottom: 40px; }
+.quote-card p { font-size: 1.05rem; line-height: 1.6; margin: 0 0 28px; color: var(--ink); }
 
 .quote-author {
   display: flex;
@@ -792,38 +657,14 @@ a {
   padding-top: 20px;
 }
 
-.quote-author strong {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.01em;
-}
+.quote-author strong { font-size: 1rem; font-weight: 600; }
+.quote-author span { font-size: 0.8rem; color: var(--muted); }
 
-.quote-author span {
-  font-size: 0.8rem;
-  color: var(--muted);
-  line-height: 1.4;
-}
+.cert-list { margin: 0; padding-left: 20px; }
+.cert-list li { font-size: 1.05rem; margin-bottom: 8px; }
 
-/* --- CREDENTIAL SYSTEMS --- */
-.credentials-section {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 48px;
-  border-bottom: 1px solid var(--line);
-}
-
-.education-block h3 { font-size: 1.35rem; font-weight: 600; margin: 0 0 8px; letter-spacing: -0.02em; }
-.education-block span { display: block; font-size: 1rem; color: var(--muted); line-height: 1.5; }
-
-.cert-block { color: var(--muted); }
-.cert-block ul { margin: 0; padding-left: 20px; }
-.cert-block li { font-size: 1.05rem; margin-bottom: 10px; line-height: 1.4; }
-
-/* --- CONTACT MODULE STYLES (ELITE GLOW POD LINKS) --- */
-.contact-section { 
-  background: var(--bg-canvas); 
-}
+/* --- CONTACT POD MODULE SHORTCUT GRID --- */
+.contact-section { background: var(--bg-canvas); }
 
 .contact-grid { 
   display: grid; 
@@ -837,12 +678,9 @@ a {
   align-items: center;
   justify-content: center;
   height: 56px;
-  
-  /* Apple Glass Injection Curve parameters */
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-apple);
-  
+  border-radius: var(--radius-apple); 
   font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -862,7 +700,7 @@ a {
   transform: translateY(-3px);
 }
 
-/* --- SITE FOOTER CAP CONTAINER --- */
+/* --- SYSTEM FOOTER --- */
 .site-footer {
   display: flex;
   justify-content: center;
@@ -873,7 +711,6 @@ a {
   font-size: 0.75rem;
   color: var(--muted);
   border-top: 1px solid var(--line);
-  letter-spacing: 0.02em;
 }
 
 @keyframes drift {
@@ -881,7 +718,7 @@ a {
   to { transform: translateX(-50%); }
 }
 
-/* --- HARDWARE STABILIZED RESOLUTION SCROLL REVEAL VALUES --- */
+/* --- SCROLL REVEAL DRIVERS --- */
 .scroll-reveal {
   opacity: 1;
   transform: none;
@@ -904,7 +741,6 @@ a {
 @media (max-width: 860px) {
   .site-header { top: 0; }
   .header-inner { width: 100%; border-radius: 0; border-top: none; border-left: none; border-right: none; }
-  
   .menu-toggle { display: flex; }
   .header-action { display: none; }
 
@@ -931,49 +767,19 @@ a {
     pointer-events: auto;
   }
 
-  .nav-links a {
-    width: 100%;
-    padding: 14px 24px;
-    font-size: 0.85rem;
-  }
+  .nav-links a { width: 100%; padding: 14px 24px; font-size: 0.85rem; }
 
-  .editorial-row, .ai-grid, .skills-grid, .credentials-section {
+  .editorial-row, .stats-grid, .ai-grid, .skills-grid, .recommendation-grid, .credentials-section {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-
-  .recommendation-grid, .contact-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-
-  .role-header {
-    flex-direction: column;
-    gap: 6px;
-  }
+  .contact-grid { grid-template-columns: 1fr; }
+  .role-header { flex-direction: column; gap: 6px; }
 }
 
 @media (max-width: 580px) {
   .hero-content, .section-shell, .site-footer { padding-left: 16px; padding-right: 16px; }
-  .brand strong { display: none; }
-  
   .hero-meta { grid-template-columns: 1fr; gap: 16px; }
-  .stats-grid { grid-template-columns: 1fr; }
-  
   .hero-actions-row { flex-direction: column; align-items: stretch; }
   .hero-actions-row .button { width: 100%; text-align: center; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .scroll-reveal {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-    transition: none !important;
-  }
-  html { scroll-behavior: auto; }
-  .marquee-track { animation: none; }
 }
