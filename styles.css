@@ -207,7 +207,7 @@ a {
   /* Crystal-clear high transparency linear lighting mix */
   background: linear-gradient(
     135deg, 
-    rgba(255, 255, 255, 0.015) 0%, 
+    rgba(255, 255, 255, 0.005) 0%, 
     rgba(255, 255, 255, 0) 50%, 
     rgba(0, 0, 0, 0.01) 100__%
   );
