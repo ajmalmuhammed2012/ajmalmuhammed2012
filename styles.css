@@ -110,28 +110,76 @@ a {
   -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
+/* --- LUXURY SCIFI BRAND COMPOSITION --- */
 .brand {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
+  cursor: pointer;
 }
 
-.brand span {
+/* The interactive luminescent core icon */
+.brand .brand-node {
   font-weight: 700;
   font-size: 0.7rem;
-  background: var(--ink);
-  color: var(--bg);
-  width: 18px;
-  height: 18px;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  width: 26px;
+  height: 26px;
   display: grid;
   place-items: center;
-  border-radius: 6px;
+  
+  /* Liquid Glass Signature Blueprint */
+  background: var(--glass);
+  border: 1px solid var(--accent);
+  border-radius: 8px; /* Smooth premium curve */
+  box-shadow: 0 0 10px var(--accent-glow), inset 0 1px 0 var(--glass-specular);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.brand strong {
+/* Rebuilt Typographic Imprint */
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-main {
   font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  transition: color 0.3s ease;
+}
+
+.brand-sub {
+  font-size: 0.55rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-top: 2px;
+  transition: color 0.3s ease;
+}
+
+/* --- THE KINETIC HOVER TRIGGER --- */
+.brand:hover .brand-node {
+  border-color: var(--accent-hover);
+  background: var(--accent-hover);
+  color: #ffffff;
+  box-shadow: 0 0 18px var(--accent-hover-glow);
+  transform: scale(1.05) rotate(-4deg);
+}
+
+.brand:hover .brand-main {
+  color: var(--ink);
+}
+
+.brand:hover .brand-sub {
+  color: var(--accent-hover);
 }
 
 .nav-links {
