@@ -1,10 +1,10 @@
-// Year Sync
+// Year Sync Engine
 const year = document.querySelector("#year");
 if (year) {
   year.textContent = new Date().getFullYear();
 }
 
-// Light & Dark Mode System Controller
+// Light & Dark Mode System Interface Controller
 const themeToggle = document.querySelector("#theme-toggle");
 const rootElement = document.documentElement;
 
@@ -13,7 +13,7 @@ const getCanvasColors = () => {
   return {
     nodeRest: isDarkMode ? "rgba(45, 226, 206, 0.95)" : "rgba(20, 165, 150, 0.95)",
     nodeHover: isDarkMode ? "rgba(255, 110, 0, 1)" : "rgba(230, 85, 0, 1)",
-    line: isDarkMode ? "rgba(45, 226, 206, 0.25)" : "rgba(20, 165, 150, 0.18)" // Increased alpha baseline for connectors
+    line: isDarkMode ? "rgba(45, 226, 206, 0.25)" : "rgba(20, 165, 150, 0.18)"
   };
 };
 
@@ -28,7 +28,7 @@ if (themeToggle) {
   });
 }
 
-// Hamburger Navigation Setup
+// Hamburger Toggle Setup
 const menuToggle = document.querySelector(".menu-toggle");
 const siteHeader = document.querySelector(".site-header");
 const navLinks = document.querySelectorAll(".nav-links a");
@@ -47,7 +47,7 @@ if (menuToggle && siteHeader) {
   });
 }
 
-// Antigravity Constellation Canvas Animation Logic
+// Antigravity Organic Cluster Constellation Logic
 const canvas = document.querySelector("#antigravity-canvas");
 if (canvas) {
   const ctx = canvas.getContext("2d");
@@ -68,7 +68,7 @@ if (canvas) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     particles.length = 0;
-    const totalParticles = width < 680 ? 40 : 75; // Slightly reduced count to balance the larger node footprints
+    const totalParticles = width < 680 ? 40 : 75;
 
     for (let i = 0; i < totalParticles; i++) {
       const homeX = Math.random() * width;
@@ -80,7 +80,7 @@ if (canvas) {
         y: homeY,
         vx: 0,
         vy: 0,
-        baseSize: 4.5, // Bold, upscaled resting nodes
+        baseSize: 4.5,
         size: 4.5,
         phase: Math.random() * Math.PI * 2,
         isHovered: false
@@ -108,7 +108,6 @@ if (canvas) {
         
         if (dist < pointerRadius) {
           particle.isHovered = true;
-          // Dynamically amplify node scale up to 6px under cursor proximity
           particle.size = particle.baseSize + (1 - dist / pointerRadius) * 1.5; 
           
           const force = (1 - dist / pointerRadius) * 2.0;
@@ -127,7 +126,7 @@ if (canvas) {
     });
 
     const maxLinkDistance = width < 680 ? 100 : 140;
-    ctx.lineWidth = 1.5; // Upgraded connector line thickness for distinct grid definition
+    ctx.lineWidth = 1.5;
     ctx.strokeStyle = canvasColors.line;
 
     for (let i = 0; i < particles.length; i++) {
@@ -164,22 +163,29 @@ if (canvas) {
     pointer.y = event.clientY - rect.top;
   };
 
-  // Premium Scroll Reveal Intersection Observer Execution Pipeline
+  resizeCanvas();
+  draw();
+
+  window.addEventListener("resize", resizeCanvas);
+  window.addEventListener("pointermove", updatePointer, { passive: true });
+  window.addEventListener("pointerleave", () => { pointer.active = false; });
+}
+
+// Integrated Scroll Reveal Pipeline Configuration
 document.addEventListener("DOMContentLoaded", () => {
   const revealElements = document.querySelectorAll(".scroll-reveal");
 
   if (revealElements.length > 0) {
     const observerOptions = {
-      root: null, // Scans native global screen viewport bounds
-      rootMargin: "0px 0px -8% 0px", // Margins trigger animations slightly before element enters view
-      threshold: 0.08 // Triggers when at least 8% of the target container is intersecting
+      root: null,
+      rootMargin: "0px 0px -8% 0px",
+      threshold: 0.08
     };
 
     const revealObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("reveal-active");
-          // Unobserves the section once triggered to ensure smooth, performant rendering
           observer.unobserve(entry.target);
         }
       });
@@ -190,11 +196,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
-  resizeCanvas();
-  draw();
-
-  window.addEventListener("resize", resizeCanvas);
-  window.addEventListener("pointermove", updatePointer, { passive: true });
-  window.addEventListener("pointerleave", () => { pointer.active = false; });
-}
