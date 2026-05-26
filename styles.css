@@ -6,8 +6,8 @@
   --ink: #1d1d1f;
   --muted: #6e6e73;
   --line: #e8e8ed;
-  --glass: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(0, 0, 0, 0.05);
   --accent: #0066cc;
   --card-bg: #ffffff;
   --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -22,7 +22,7 @@
   --muted: #86868b;
   --line: #424245;
   --glass: rgba(0, 0, 0, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.05);
   --accent: #2997ff;
   --card-bg: #1d1d1f;
   --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -58,7 +58,7 @@ a {
   transition: all 0.2s ease;
 }
 
-/* --- BAR NAVIGATION --- */
+/* --- NAVIGATION BAR --- */
 .site-header {
   position: fixed;
   top: 0;
@@ -177,7 +177,7 @@ a {
   background-color: var(--ink);
 }
 
-/* --- HERO SECTION WITH HIGH-TRANSPARENCY LIQUID GLASS --- */
+/* --- HERO CONSTELLATION MASK --- */
 .hero {
   position: relative;
   min-height: 80svh;
@@ -197,34 +197,30 @@ a {
   opacity: var(--canvas-opacity);
 }
 
-/* Re-engineered High-Transparency Fluid Glass Plane */
 .hero-shade {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  
-  /* Crystal-clear high transparency linear lighting mix */
   background: linear-gradient(
     135deg, 
-    rgba(255, 255, 255, 0.005) 0%, 
+    rgba(255, 255, 255, 0.015) 0%, 
     rgba(255, 255, 255, 0) 50%, 
-    rgba(0, 0, 0, 0.01) 100__%
+    rgba(0, 0, 0, 0.01) 100%
   );
-  
-  /* Lower blur coefficient maximizes transparency while preserving liquid glass refraction */
-  backdrop-filter: blur(0.005px) saturate(120%);
+  backdrop-filter: blur(1px) saturate(120%);
   -webkit-backdrop-filter: blur(1px) saturate(120%);
 }
 
 .hero-content {
   position: relative;
-  z-index: 2; 
+  z-index: 2;
   width: 100%;
   max-width: 1024px;
   margin: 0 auto;
   padding: 90px 24px 40px;
 }
+
 .kicker {
   font-size: 0.8rem;
   font-weight: 600;
@@ -325,14 +321,13 @@ a {
   text-transform: uppercase;
 }
 
-/* --- EDITORIAL SYSTEM BLOCKS (THE ALIGNMENT FIX) --- */
+/* --- SECTIONS LAYOUT ARCHITECTURE --- */
 .section-shell {
   max-width: 1024px;
   margin: 0 auto;
   padding: 110px 24px;
 }
 
-/* true side-by-side grid structure with clean spacing layout alignment */
 .editorial-row {
   display: grid;
   grid-template-columns: 300px 1fr;
@@ -351,7 +346,7 @@ a {
 .section-desc {
   font-size: 1.1rem;
   color: var(--muted);
-  margin-y: 16px 0 0;
+  margin-top: 16px;
   line-height: 1.5;
 }
 
@@ -389,13 +384,12 @@ a {
   line-height: 1.5;
 }
 
-/* --- AI PACK COMPOSITION --- */
+/* --- AI CORE SYSTEM BOARDS --- */
 .ai-section {
   background: var(--bg-subtle);
   border-bottom: 1px solid var(--line);
 }
 
-/* Right-side alignment block spans the remaining space fully */
 .right-content-wrapper {
   display: flex;
   flex-direction: column;
@@ -443,7 +437,6 @@ a {
   line-height: 1.5;
 }
 
-/* Flexible item collections wrap and expand flawlessly */
 .ai-outcomes, .project-panel {
   display: flex;
   flex-wrap: wrap;
@@ -460,7 +453,7 @@ a {
   color: var(--ink);
 }
 
-/* --- CHRONOLOGICAL TIMELINE CHANNELS --- */
+/* --- EXPERIENCE TIMECHANNELS --- */
 .timeline {
   display: flex;
   flex-direction: column;
@@ -569,7 +562,7 @@ a {
   margin-top: 12px;
 }
 
-/* --- MANAGER ENDORSEMENT TILES --- */
+/* --- EXPERT ENDORSEMENTS --- */
 .proof-section {
   background: var(--bg-subtle);
   border-bottom: 1px solid var(--line);
@@ -618,7 +611,7 @@ a {
   line-height: 1.4;
 }
 
-/* --- CREDENTIAL SYSTEMS --- */
+/* --- CREDENTIAL STRUCTURE MODULES --- */
 .credentials-section {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -638,12 +631,12 @@ a {
 
 .cert-list li { font-size: 1rem; margin-bottom: 8px; }
 
-/* --- CONTACT MODULE --- */
+/* --- CONTACT MODULE STYLES --- */
 .contact-section { background: var(--bg-canvas); }
 
 .contact-actions { 
   display: grid; 
-  grid-template-columns: repeat(2, 1fr); /* Balanced 2-column action buttons */
+  grid-template-columns: repeat(2, 1fr); 
   gap: 16px; 
   width: 100%;
 }
@@ -674,7 +667,7 @@ a {
   stroke-width: 2;
 }
 
-/* --- FOOTER --- */
+/* --- FOOTER REGION --- */
 .site-footer {
   display: flex;
   justify-content: space-between;
@@ -692,7 +685,21 @@ a {
   to { transform: translateX(-50%); }
 }
 
-/* --- RESPONSIVE PLATFORM BREAKS --- */
+/* --- SCROLL REVEAL MATRICES --- */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  will-change: transform, opacity;
+  transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1), 
+              transform 800ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.scroll-reveal.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- MOBILE RESPONSIVE MEDIA ADAPTATIONS --- */
 @media (max-width: 860px) {
   .site-header { padding: 0; }
   .header-inner { padding: 0 16px; }
@@ -711,7 +718,6 @@ a {
     padding: 8px 0;
     background: var(--bg-subtle);
     border-bottom: 1px solid var(--line);
-    
     opacity: 0;
     transform: translateY(-4px);
     pointer-events: none;
@@ -752,29 +758,6 @@ a {
     gap: 6px;
   }
 }
-/* --- PREMIUM INTEGRATED SCROLL REVEAL TIMING MATRICES --- */
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  will-change: transform, opacity;
-  transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1), 
-              transform 800ms cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* Activated transition state pushed at runtime when sections pass through the viewport threshold */
-.scroll-reveal.reveal-active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Graceful degradation safety toggle: bypasses structural sliding calculations if user reduces OS motion choices */
-@media (prefers-reduced-motion: reduce) {
-  .scroll-reveal {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-    transition: none !important;
-  }
-}
 
 @media (max-width: 580px) {
   .hero-content, .section-shell, .site-footer { padding-left: 16px; padding-right: 16px; }
@@ -787,4 +770,14 @@ a {
   .hero-actions .button { width: 100%; text-align: center; }
   
   .site-footer { flex-direction: column; gap: 12px; text-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    transition: none !important;
+  }
+  html { scroll-behavior: auto; }
+  .marquee-track { animation: none; }
 }
