@@ -243,12 +243,6 @@ a {
   height: 100%;
   z-index: 0;
   opacity: var(--canvas-opacity);
-
-  /* ---> ADD THESE FOUR LINES BELOW TO KILL THE SAFARI BLUR <--- */
-  image-rendering: -webkit-optimize-contrast; /* WebKit specific contrast override */
-  image-rendering: crisp-edges;               /* Standard sharp rendering */
-  transform: translateZ(0);                   /* Hard-forces a dedicated layer pass */
-  -webkit-transform: translateZ(0);           /* Legacy Safari engine anchor */
 }
 
 .hero-content {
