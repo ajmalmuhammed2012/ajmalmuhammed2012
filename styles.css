@@ -213,7 +213,7 @@ a {
   );
   
   /* Lower blur coefficient maximizes transparency while preserving liquid glass refraction */
-  backdrop-filter: blur(1px) saturate(120%);
+  backdrop-filter: blur(0.05px) saturate(120%);
   -webkit-backdrop-filter: blur(1px) saturate(120%);
 }
 
