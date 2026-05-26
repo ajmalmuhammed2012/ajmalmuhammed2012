@@ -164,6 +164,33 @@ if (canvas) {
     pointer.y = event.clientY - rect.top;
   };
 
+  // Premium Scroll Reveal Intersection Observer Execution Pipeline
+document.addEventListener("DOMContentLoaded", () => {
+  const revealElements = document.querySelectorAll(".scroll-reveal");
+
+  if (revealElements.length > 0) {
+    const observerOptions = {
+      root: null, // Scans native global screen viewport bounds
+      rootMargin: "0px 0px -8% 0px", // Margins trigger animations slightly before element enters view
+      threshold: 0.08 // Triggers when at least 8% of the target container is intersecting
+    };
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-active");
+          // Unobserves the section once triggered to ensure smooth, performant rendering
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    revealElements.forEach((element) => {
+      revealObserver.observe(element);
+    });
+  }
+});
+
   resizeCanvas();
   draw();
 
