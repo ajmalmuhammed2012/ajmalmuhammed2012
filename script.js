@@ -1,9 +1,15 @@
-// Force the browser to reset scroll history and start at the top on reload
+// FORCE THE BROWSER TO DISCARD MEMORIZED SCROLL INTERFACES ON REFRESH
 if (history.scrollRestoration) {
   history.scrollRestoration = 'manual';
 }
 
+// FORCE IMMEDATE VIEWPORT SNAPPING BEFORE PIPELINES COMPILE
 window.scrollTo(0, 0);
+
+// Ensure execution stays locked at coordinates during full asset download stages
+window.addEventListener('beforeunload', () => {
+  window.scrollTo(0, 0);
+});
 
 
 // Year Sync Engine
