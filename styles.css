@@ -685,13 +685,13 @@ a {
   to { transform: translateX(-50%); }
 }
 
-/* --- SCROLL REVEAL MATRICES --- */
+/* --- FIXED SCROLL REVEAL MATRICES --- */
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(20px);
   will-change: transform, opacity;
-  transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1), 
-              transform 800ms cubic-bezier(0.25, 1, 0.5, 1);
+  transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scroll-reveal.reveal-active {
