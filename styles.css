@@ -177,10 +177,10 @@ a {
   background-color: var(--ink);
 }
 
-/* --- HERO COMPOSITION --- */
+/* --- HERO SECTION WITH INTEGRATED LIQUID REFRACTION --- */
 .hero {
   position: relative;
-  min-height: 80svh;
+  min-height: 85svh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -197,15 +197,35 @@ a {
   opacity: var(--canvas-opacity);
 }
 
+/* Premium Web-Refraction Mask overlaying the canvas layers */
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  
+  /* Subtle light reflection sheen that looks exceptional in both light & dark mode */
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.03) 0%, 
+    rgba(255, 255, 255, 0) 50%, 
+    rgba(0, 0, 0, 0.02) 100%
+  );
+  
+  /* Liquid Glass Distortion Matrix across the background */
+  backdrop-filter: blur(2px) saturate(110%);
+  -webkit-backdrop-filter: blur(2px) saturate(110%);
+}
+
+/* Ensure your hero text layer floats on top of the glass reflection */
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2; 
   width: 100%;
   max-width: 1024px;
   margin: 0 auto;
   padding: 90px 24px 40px;
 }
-
 .kicker {
   font-size: 0.8rem;
   font-weight: 600;
