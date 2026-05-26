@@ -178,9 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (revealElements.length > 0) {
     const observerOptions = {
       root: null,
-      // Adjust bounding matrix to execute reveal smoothly before sections pass mid-screen
-      rootMargin: "0px 0px -12% 0px", 
-      threshold: 0.02
+      // Increased bottom threshold offset to ensure scrolling remains natural and smooth
+      rootMargin: "0px 0px -15% 0px", 
+      threshold: 0.05
     };
 
     const revealObserver = new IntersectionObserver((entries, observer) => {
@@ -192,8 +192,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }, observerOptions);
 
-    revealElements.forEach((element) => {
-      revealObserver.observe(element);
-    });
+    // Staggered initialization switch prevents layout initialization collisions on load
+    setTimeout(() => {
+      revealElements.forEach((element) => {
+        revealObserver.observe(element);
+      });
+    }, 150);
   }
 });
