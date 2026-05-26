@@ -1,3 +1,11 @@
+// Force the browser to reset scroll history and start at the top on reload
+if (history.scrollRestoration) {
+  history.scrollRestoration = 'manual';
+}
+
+window.scrollTo(0, 0);
+
+
 // Year Sync Engine
 const year = document.querySelector("#year");
 if (year) {
