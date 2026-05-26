@@ -91,7 +91,7 @@ if (canvas) {
         vx: 0,
         vy: 0,
         // Large bold futuristic nodes that highlight clearly across the viewport
-        size: 3.5, 
+        size: 7.5, 
         phase: Math.random() * Math.PI * 2,
         isHovered: false
       });
