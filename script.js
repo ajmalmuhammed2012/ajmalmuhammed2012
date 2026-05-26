@@ -191,14 +191,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }, observerOptions);
 
-    // Delaying both the flag class AND the observer activation allows the hero 
-    // to load completely alone before lower sections are hidden and monitored.
+    // Allowing the browser window 300ms to register real layout heights & 
+    // scroll points before hiding elements preserves height layout lines
     setTimeout(() => {
       document.documentElement.classList.add("js-enabled");
       
       revealElements.forEach((element) => {
         revealObserver.observe(element);
       });
-    }, 250);
+    }, 300);
   }
 });
