@@ -171,15 +171,16 @@ if (canvas) {
   window.addEventListener("pointerleave", () => { pointer.active = false; });
 }
 
-// Integrated Scroll Reveal Pipeline Configuration
+// Fixed Scroll Reveal Intersection Observer Execution Pipeline
 document.addEventListener("DOMContentLoaded", () => {
   const revealElements = document.querySelectorAll(".scroll-reveal");
 
   if (revealElements.length > 0) {
     const observerOptions = {
       root: null,
-      rootMargin: "0px 0px -8% 0px",
-      threshold: 0.08
+      // Adjust bounding matrix to execute reveal smoothly before sections pass mid-screen
+      rootMargin: "0px 0px -12% 0px", 
+      threshold: 0.02
     };
 
     const revealObserver = new IntersectionObserver((entries, observer) => {
