@@ -1,24 +1,33 @@
-// FORCE THE BROWSER TO DISCARD MEMORIZED SCROLL INTERFACES ON REFRESH
-if (history.scrollRestoration) {
+// 1. ANCHOR & BLINK SUPPRESSION GUARD ( must execute immediately )
+if (window.history && history.scrollRestoration) {
   history.scrollRestoration = 'manual';
 }
 
-// FORCE IMMEDATE VIEWPORT SNAPPING BEFORE PIPELINES COMPILE
+// Hard reset layout coordinates instantly during the paint sequence
 window.scrollTo(0, 0);
 
-// Ensure execution stays locked at coordinates during full asset download stages
+// Clear address bar hash location targeting conflicts
+if (window.location.hash) {
+  window.scrollTo(0, 0);
+  setTimeout(() => { window.scrollTo(0, 0); }, 1);
+}
+
+// Prevent caching offsets right when reload sequence triggers
 window.addEventListener('beforeunload', () => {
   window.scrollTo(0, 0);
 });
 
 
-// Year Sync Engine
-const year = document.querySelector("#year");
-if (year) {
-  year.textContent = new Date().getFullYear();
-}
+// 2. CHRONOLOGY & METRIC SYNCHRONIZATION 
+document.addEventListener("DOMContentLoaded", () => {
+  const year = document.querySelector("#year");
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
+});
 
-// Light & Dark Mode System Interface Controller
+
+// 3. UTILITY NAVIGATION & INTERFACE SCHEME TIMING
 const themeToggle = document.querySelector("#theme-toggle");
 const rootElement = document.documentElement;
 
@@ -42,7 +51,6 @@ if (themeToggle) {
   });
 }
 
-// Hamburger Toggle Setup
 const menuToggle = document.querySelector(".menu-toggle");
 const siteHeader = document.querySelector(".site-header");
 const navLinks = document.querySelectorAll(".nav-links a");
@@ -61,7 +69,8 @@ if (menuToggle && siteHeader) {
   });
 }
 
-// Antigravity Organic Cluster Constellation Logic
+
+// 4. ANTIGRAVITY ORGANIC CONSTELLATION ENGINE
 const canvas = document.querySelector("#antigravity-canvas");
 if (canvas) {
   const ctx = canvas.getContext("2d");
@@ -185,7 +194,8 @@ if (canvas) {
   window.addEventListener("pointerleave", () => { pointer.active = false; });
 }
 
-// Fixed Scroll Reveal Intersection Observer Execution Pipeline
+
+// 5. STABILIZED INTERSECTION REVEAL CONTROLLER
 document.addEventListener("DOMContentLoaded", () => {
   const revealElements = document.querySelectorAll(".scroll-reveal");
 
@@ -205,14 +215,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }, observerOptions);
 
-    // Allowing the browser window 300ms to register real layout heights & 
-    // scroll points before hiding elements preserves height layout lines
+    // Give browser threads 350ms to completely map layout calculations 
+    // before turning on animation offsets. Kills jump history.
     setTimeout(() => {
       document.documentElement.classList.add("js-enabled");
       
       revealElements.forEach((element) => {
         revealObserver.observe(element);
       });
-    }, 300);
+    }, 350);
   }
 });
