@@ -204,11 +204,11 @@ a {
   pointer-events: none;
   background: linear-gradient(
     135deg, 
-    rgba(255, 255, 255, 0.015) 0%, 
+    rgba(255, 255, 255, 0.0005) 0%, 
     rgba(255, 255, 255, 0) 50%, 
     rgba(0, 0, 0, 0.01) 100%
   );
-  backdrop-filter: blur(1px) saturate(120%);
+  backdrop-filter: blur(0.05px) saturate(120%);
   -webkit-backdrop-filter: blur(1px) saturate(120%);
 }
 
