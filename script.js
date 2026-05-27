@@ -193,21 +193,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const roleOpacity = pRoleIn;
     
     let rx, ry, rs;
-    if (isMobile) {
-      rx = 0;
+    if (p < 0.45) {
+      rx = isMobile ? 0 : roleOffset.x;
       ry = roleOffset.y;
-      rs = 1.15 - pRoleIn * 0.15;
+      rs = 1.15;
     } else {
-      if (p < 0.45) {
-        rx = roleOffset.x;
-        ry = roleOffset.y;
-        rs = 1.15;
-      } else {
-        const pDock = Math.max(0, Math.min(1, (p - 0.45) / 0.4));
-        rx = roleOffset.x * (1 - pDock);
-        ry = roleOffset.y * (1 - pDock);
-        rs = 1.15 - pDock * 0.15;
-      }
+      const pDock = Math.max(0, Math.min(1, (p - 0.45) / 0.4));
+      rx = isMobile ? 0 : roleOffset.x * (1 - pDock);
+      ry = roleOffset.y * (1 - pDock);
+      rs = 1.15 - pDock * 0.15;
     }
     roleEl.style.opacity = roleOpacity;
     roleEl.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${rs})`;
