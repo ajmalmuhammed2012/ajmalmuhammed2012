@@ -310,7 +310,7 @@ main {
 /* --- HERO SECTION --- */
 .hero-scroll-track {
   position: relative;
-  height: 200vh;
+  height: 250vh;
 }
 
 .hero {
@@ -382,7 +382,7 @@ main {
 /* --- CINEMATIC DESKTOP TIMELINE CONFIGS --- */
 @media (min-width: 860px) {
   .hero-scroll-track {
-    height: 250vh;
+    height: 300vh;
   }
 
   .cinematic-headline-wrapper {
