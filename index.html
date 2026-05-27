@@ -1,30 +1,58 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+  <!-- 
+    ==================================================================
+    METADATA & DOCUMENT HEAD CONFIGURATION
+    ==================================================================
+  -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- SEO Meta Tags: Custom description targeting financial software engineering & .NET stack -->
   <meta name="description" content="Ajmal Muhammed - Senior Software Engineer portfolio with 5+ years of experience building enterprise financial platforms and .NET systems." />
   <title>Ajmal Muhammed | Senior Software Engineer</title>
+  
+  <!-- Stylesheet integration with cache-busting query parameter (?v=2) to force updates in browser caches -->
   <link rel="stylesheet" href="styles.css?v=2" />
+  
+  <!-- Defer loading of JS code to ensure the parser finishes rendering the core DOM elements first -->
   <script src="script.js?v=2" defer></script>
 </head>
 <body>
 
-  <!-- Ambient Constellation & Spotlight Background -->
+  <!-- 
+    ==================================================================
+    AMBIENT SYSTEM-ACCELERATED BACKGROUND CONTAINER
+    ==================================================================
+    Provides the background radial spotlight, grid-overlay textures, 
+    and the high-performance constellation particle engine.
+  -->
   <div class="ambient-bg" aria-hidden="true">
+    <!-- Overlay grid constructed with radial-gradient pattern via CSS -->
     <div class="grid-overlay"></div>
+    <!-- Dynamically positioned spotlight reacting to pointermove events in script.js -->
     <div class="spotlight"></div>
+    <!-- Constellation canvas: Optimized rendering loops handle drifting particles and lines here -->
     <canvas id="antigravity-canvas"></canvas>
   </div>
 
-  <!-- Glassmorphic Site Header -->
+  <!-- 
+    ==================================================================
+    GLASSMORPHIC SITE HEADER & MENU NAVIGATION
+    ==================================================================
+    Sticky header positioned at the top of the viewport. Uses backdrop-filter 
+    to create a frosted glass visual effect.
+  -->
   <header class="site-header" id="site-header" aria-label="Site navigation">
     <div class="header-inner">
+      <!-- Logo Branding Block: Links back to Top/Hero -->
       <a class="brand" href="#hero" aria-label="Ajmal Muhammed home">
         <span class="brand-node" aria-hidden="true">AM</span>
         <span class="brand-text">Ajmal Muhammed</span>
       </a>
       
+      <!-- Primary Navigation Links: Controls target anchors across the single-page layout -->
       <nav class="nav-links" id="main-nav" aria-label="Main menu">
         <a href="#ai">AI Leverage</a>
         <a href="#experience">Experience</a>
@@ -33,38 +61,60 @@
         <a href="#testimonials">Testimonials</a>
       </nav>
 
+      <!-- Action Items & Mobile Menu Controls -->
       <div class="header-actions">
+        <!-- Theme Toggle Switcher: Displays sun/moon SVGs based on [data-theme] attribute -->
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light and dark theme">
           <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.22" x2="5.64" y2="17.84"></line><line x1="18.36" y1="5.64" x2="19.78" y2="7.06"></line></svg>
           <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
+        
+        <!-- Hamburger Menu Button: Visible on screens < 860px (re-styled with CSS pseudo-elements) -->
         <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="main-nav">
           <span></span><span></span>
         </button>
+        
+        <!-- Quick CTA Button linking directly to the Contact Grid -->
         <a class="header-action" href="#contact" id="header-contact-btn">Contact</a>
       </div>
     </div>
   </header>
 
-  <!-- Main Content Layout -->
+  <!-- 
+    ==================================================================
+    MAIN WEBSITE CONTENT CONTAINER
+    ==================================================================
+  -->
   <main>
     
-    <!-- Hero Section with Cinematic Transition -->
+    <!-- 
+      HERO SECTION WITH CINEMATIC SCROLL TRANSITIONS
+      This track acts as a timeline container (300vh height). As the viewport
+      scrolls down, the stickied .hero section stays locked in place while the
+      JavaScript updates properties based on scroll position progress.
+    -->
     <div class="hero-scroll-track" id="hero-track">
       <section class="hero" id="hero">
         <div class="hero-content">
+          <!-- Headline Wrapper: Dynamically centered/spaced on viewport calculation -->
           <div class="cinematic-headline-wrapper">
             <h1 id="headline-name" class="hero-title">Ajmal Muhammed</h1>
             <h2 id="headline-role" class="hero-title role-title">Software Engineer</h2>
           </div>
+          
+          <!-- Reveal Block: Fades and slides in once the title finishes docking -->
           <div class="hero-reveal-block" id="hero-reveal">
             <p class="hero-copy">
               I am Ajmal Muhammed, a Senior Software Engineer with 5+ years of experience building enterprise-grade .NET, Web API, cloud-integrated, and data-driven systems for financial services platforms.
             </p>
+            
+            <!-- Hero CTA Buttons -->
             <div class="hero-actions-row">
               <a class="button primary" href="#experience" id="hero-exp-btn">View Experience</a>
               <a class="button secondary" href="mailto:ajmalmuhammed2012@gmail.com" id="hero-email-btn">Email Me</a>
             </div>
+            
+            <!-- Hero Meta Information Grid -->
             <div class="hero-meta">
               <div class="meta-item">
                 <span class="label">Current Role</span>
@@ -84,7 +134,11 @@
       </section>
     </div>
 
-    <!-- Track Record Stats -->
+    <!-- 
+      TRACK RECORD STATS
+      Displays career metrics using glassmorphic panels. Slides into place 
+      on scroll via scroll-reveal classes.
+    -->
     <section class="stats-section scroll-reveal" id="track-record" aria-label="Career metrics">
       <div class="stats-grid">
         <article class="glass-card">
@@ -106,7 +160,10 @@
       </div>
     </section>
 
-    <!-- Profile Editorial Intro -->
+    <!-- 
+      PROFILE EDITORIAL INTRO
+      Detailed biography highlighting developer characteristics and methodology.
+    -->
     <section class="section-shell scroll-reveal" id="profile" aria-label="Profile intro">
       <div class="editorial-row">
         <div class="section-title-block">
@@ -121,7 +178,10 @@
       </div>
     </section>
 
-    <!-- Infinite Strengths Marquee -->
+    <!-- 
+      INFINITE STRENGTHS MARQUEE
+      Loops continuously horizontally using pure CSS animations to showcase core skills.
+    -->
     <section class="marquee-container" aria-label="Core technological strengths">
       <div class="marquee-track">
         <span>.NET 8</span><span>C#</span><span>FinTech</span><span>Web API</span><span>SQL Server</span><span>Alteryx</span><span>AI-Augmented Delivery</span><span>Release Ownership</span>
@@ -129,7 +189,10 @@
       </div>
     </section>
 
-    <!-- AI Leverage Section -->
+    <!-- 
+      AI LEVERAGE SECTION
+      Lists modern AI tools and personal use cases mapped to productivity.
+    -->
     <section class="section-shell ai-section scroll-reveal" id="ai">
       <div class="editorial-row">
         <div class="section-title-block">
@@ -139,7 +202,9 @@
             I treat AI as a practical engineering accelerator: useful for exploring implementation options, generating boilerplate scripts, reviewing code paths, improving technical documentation, and debugging incidents.
           </p>
         </div>
+        
         <div class="ai-content-wrapper">
+          <!-- Grid of AI Assistive tools -->
           <div class="ai-grid">
             <article class="glass-card">
               <div class="tool-meta">
@@ -184,6 +249,8 @@
               <p>Hands-on experimentation with local AI models through Google AI Edge Gallery for privacy-aware, on-device workflows.</p>
             </article>
           </div>
+          
+          <!-- Outcome Pills listing focus endpoints -->
           <div class="ai-outcomes-container">
             <h3 class="ai-outcomes-heading">Core Focus Areas & Outcomes</h3>
             <div class="ai-outcomes" aria-label="AI-assisted outcomes list">
@@ -201,14 +268,19 @@
       </div>
     </section>
 
-    <!-- Experience Timeline Section -->
+    <!-- 
+      EXPERIENCE TIMELINE SECTION
+      Chronological mapping of professional consultancy roles inside Infosys.
+    -->
     <section class="section-shell scroll-reveal" id="experience">
       <div class="editorial-row">
         <div class="section-title-block">
           <span class="kicker">Experience</span>
           <h2 class="section-title">Career progression with increasing ownership.</h2>
         </div>
+        
         <div class="timeline">
+          <!-- Role 1: Senior Associate Consultant -->
           <article class="role-card glass-card">
             <div class="role-header">
               <div class="role-header-left">
@@ -228,6 +300,7 @@
             </div>
           </article>
           
+          <!-- Role 2: Associate Consultant -->
           <article class="role-card glass-card">
             <div class="role-header">
               <div class="role-header-left">
@@ -240,7 +313,8 @@
               <p>Built real-time data pipelines, enhanced enterprise applications, improved incident resolution workflows, and contributed to platform modernization initiatives.</p>
             </div>
           </article>
-
+          
+          <!-- Role 3: Senior System Engineer -->
           <article class="role-card glass-card">
             <div class="role-header">
               <div class="role-header-left">
@@ -253,7 +327,8 @@
               <p>Developed financial applications supporting mutual fund aggregation, investment automation, compliance processing, and enterprise reporting systems.</p>
             </div>
           </article>
-
+          
+          <!-- Role 4: System Engineer -->
           <article class="role-card glass-card">
             <div class="role-header">
               <div class="role-header-left">
@@ -270,7 +345,10 @@
       </div>
     </section>
 
-    <!-- Technical Stack Section -->
+    <!-- 
+      TECHNICAL STACK SECTION
+      A structured list categorized by architectural purpose.
+    -->
     <section class="section-shell scroll-reveal" id="skills">
       <div class="editorial-row">
         <div class="section-title-block">
@@ -298,7 +376,10 @@
       </div>
     </section>
 
-    <!-- Projects Section -->
+    <!-- 
+      PROJECTS SECTION
+      Showcase card highlighting individual personal project builds.
+    -->
     <section class="section-shell scroll-reveal" id="projects">
       <div class="editorial-row">
         <div class="section-title-block">
@@ -321,13 +402,18 @@
       </div>
     </section>
 
-    <!-- Testimonials Section -->
+    <!-- 
+      TESTIMONIALS SECTION
+      Display quotes of recommendations from leads, managers, and coworkers.
+    -->
     <section class="section-shell proof-section scroll-reveal" id="testimonials">
       <div class="proof-heading">
         <span class="kicker">Recognition</span>
         <h2 class="section-title">What collaborators noticed.</h2>
       </div>
+      
       <div class="recommendation-grid">
+        <!-- Direct Manager Recommendation -->
         <article class="glass-card quote-card">
           <p class="quote-text">
             He quickly ramped up, took ownership of his work, and drove tasks to successful completion with minimal supervision. His proactive attitude, sense of ownership, and commitment to delivering quality results make him a valuable contributor to any team.
@@ -338,6 +424,7 @@
           </div>
         </article>
         
+        <!-- Coworker Recommendation -->
         <article class="glass-card quote-card">
           <p class="quote-text">
             His dedication, technical expertise, and collaborative spirit were invaluable assets to the project. He is a quick learner, a problem solver by default, and always delivers high-quality work, even under tight deadlines. Not even a single edge case would escape his sharp eye — his code was always well written and well tested.
@@ -348,6 +435,7 @@
           </div>
         </article>
 
+        <!-- Product Owner Recommendation -->
         <article class="glass-card quote-card">
           <p class="quote-text">
             Ajmal was a huge asset to our development team on a very high-profile project. His follow-through and attention to detail were appreciated by the whole team. He was one of the strongest contributors.
@@ -358,6 +446,7 @@
           </div>
         </article>
 
+        <!-- Coworker Recommendation 2 -->
         <article class="glass-card quote-card">
           <p class="quote-text">
             Ajmal is dedicated and very thorough in his work, has a great learning attitude, and quickly builds rapport with team members. I would recommend Ajmal — he would be an asset to any organization.
@@ -370,14 +459,20 @@
       </div>
     </section>
 
-    <!-- Credentials Section -->
+    <!-- 
+      CREDENTIALS SECTION
+      Formal education details and certified credentials inside the organization.
+    -->
     <section class="section-shell credentials-section scroll-reveal" id="credentials" aria-label="Credentials">
+      <!-- Education Block -->
       <div class="glass-card education-block">
         <span class="kicker">Education</span>
         <h3>B.Tech in Computer Science & Engineering</h3>
         <p class="college">Marian Engineering College, Thiruvananthapuram</p>
         <span class="score">Cumulative Grade Point Average: 8.13 / 10</span>
       </div>
+      
+      <!-- Certifications Block -->
       <div class="glass-card cert-block">
         <span class="kicker">Certifications</span>
         <ul class="cert-list">
@@ -391,21 +486,30 @@
       </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- 
+      CONTACT SECTION
+      Email, LinkedIn, and GitHub links styled with vector SVG icons.
+    -->
     <section class="section-shell scroll-reveal" id="contact" aria-label="Contact information">
       <div class="editorial-row">
         <div class="section-title-block">
           <h2 class="section-title">Contact</h2>
         </div>
+        
         <div class="contact-grid">
+          <!-- Email Button -->
           <a href="mailto:ajmalmuhammed2012@gmail.com" id="contact-email">
             <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18" style="margin-right: 8px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
             Email
           </a>
+          
+          <!-- LinkedIn Button -->
           <a href="https://linkedin.com/in/ajmalmuhammed" target="_blank" rel="noreferrer" id="contact-linkedin">
             <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18" style="margin-right: 8px;"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
             LinkedIn
           </a>
+          
+          <!-- GitHub Button -->
           <a href="https://github.com/ajmalmuhammed2012" target="_blank" rel="noreferrer" id="contact-github">
             <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18" style="margin-right: 8px;"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
             GitHub
@@ -416,7 +520,11 @@
 
   </main>
 
-  <!-- Site Footer -->
+  <!-- 
+    ==================================================================
+    SITE FOOTER
+    ==================================================================
+  -->
   <footer class="site-footer">
     <p>&copy; <span id="year">2026</span> Ajmal Muhammed. All Rights Reserved.</p>
   </footer>

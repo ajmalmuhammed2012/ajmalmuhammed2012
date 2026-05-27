@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-/* --- DESIGN SYSTEM & TOKENS --- */
+/* 
+  ==================================================================
+  DESIGN SYSTEM & CSS THEME VARIABLE TOKENS
+  ==================================================================
+  Defines semantic color variable overrides for both light and dark 
+  data-theme attributes. Controls core backgrounds, text weights, 
+  borders, glass panels, grids, and accents.
+*/
 :root[data-theme="dark"] {
   --bg: #050507;
   --bg-subtle: #09090b;
@@ -49,7 +56,13 @@
   --card-glow: rgba(15, 118, 110, 0.02);
 }
 
-/* --- BASE STYLES --- */
+/* 
+  ==================================================================
+  BASE & DOCUMENT BODY STYLES
+  ==================================================================
+  Establishes box-sizing resets, anti-aliased font-rendering parameters,
+  default line-height, and smooth page scroll alignments.
+*/
 * {
   box-sizing: border-box;
   margin: 0;
@@ -126,7 +139,13 @@ a {
   transition: color 0.3s ease, opacity 0.3s ease;
 }
 
-/* --- FIXED GLASS HEADER --- */
+/* 
+  ==================================================================
+  FIXED GLASS HEADER & BRAND NAVIGATION
+  ==================================================================
+  Sticks the primary header at the viewport top. Blurs background 
+  with saturate parameters to achieve a frosted glassmorphism effect.
+*/
 .site-header {
   position: fixed;
   top: 20px;
@@ -307,7 +326,13 @@ main {
   z-index: 10;
 }
 
-/* --- HERO SECTION --- */
+/* 
+  ==================================================================
+  HERO SCROLL-TRACK & STICKY HERO TIMELINE
+  ==================================================================
+  The scroll track acts as a spacer (300vh). The sticky hero section
+  remains relative to viewport while JS modifies transform values.
+*/
 .hero-scroll-track {
   position: relative;
   height: 250vh;
@@ -554,6 +579,13 @@ main {
   color: var(--accent);
 }
 
+/* 
+  ==================================================================
+  EDITORIAL WORK SECTIONS & TEXT UTILITIES
+  ==================================================================
+  Universal typography styling for kicking indicators, bold titles,
+  and section description paragraphs.
+*/
 .section-title {
   font-size: 2rem;
   font-weight: 700;
@@ -1002,7 +1034,13 @@ main {
   font-weight: bold;
 }
 
-/* --- CONTACT --- */
+/* 
+  ==================================================================
+  CONTACT SECTION GRID
+  ==================================================================
+  Renders the 3-column list of contact channels (Email, LinkedIn, GitHub)
+  as buttons that hover translate.
+*/
 .contact-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1100,7 +1138,13 @@ main {
   }
 }
 
-/* Tablet Portrait & Mobile Header Restyling */
+/* 
+  ==================================================================
+  TABLET PORTRAIT & MOBILE RESPONSIVE MEDIA QUERIES
+  ==================================================================
+  Updates positions, locks vertical transforms, rescales titles,
+  and restyles the sticky nav menu into full-screen mobile overlays.
+*/
 @media (max-width: 860px) {
   .site-header {
     top: 0;
