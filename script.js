@@ -126,17 +126,18 @@ if (canvas) {
 }
 
 // 4. CINEMATIC SCROLL-DRIVEN HERO TIMELINE
-// 4 phases across a 420vh scroll track:
-//   Phase 1 (0→24%):   "Ajmal Muhammed" centered and held
-//   Phase 2 (24→48%):  Cross-dissolve to "Software Engineer"
-//   HOLD   (48→68%):   "Software Engineer" alone, centered — gives the reader time
-//   Phase 3 (68→100%): Layout shifts left, bio + buttons fade in
+// 4 phases across a 680vh scroll track:
+//   Phase 1 (0→20%):   "Ajmal Muhammed" centered and held
+//   Phase 2 (20→40%):  Cross-dissolve → "Software Engineer"
+//   HOLD   (40→60%):   "Software Engineer" alone, centered — reader breathes
+//   Phase 4 (60→100%): Role fades OUT, bio + buttons fade IN clean (no heading)
 const runCinematicTimeline = () => {
-  const track  = document.querySelector('.hero-scroll-track');
-  const hero   = document.getElementById('timeline-hero');
-  const nameEl = document.getElementById('headline-name');
-  const roleEl = document.getElementById('headline-role');
-  const reveal = document.querySelector('.hero-reveal-block');
+  const track   = document.querySelector('.hero-scroll-track');
+  const hero    = document.getElementById('timeline-hero');
+  const nameEl  = document.getElementById('headline-name');
+  const roleEl  = document.getElementById('headline-role');
+  const reveal  = document.querySelector('.hero-reveal-block');
+  const wrapper = document.querySelector('.cinematic-headline-wrapper');
 
   if (!track || !hero || !nameEl || !roleEl || !reveal) return;
 
@@ -144,13 +145,15 @@ const runCinematicTimeline = () => {
   const clamp   = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
   const lerp    = (a, b, t)  => a + (b - a) * t;
 
-  // Phase boundaries as fractions of total scroll progress (0 → 1)
-  // Matches the 560vh track — see styles.css comment above .hero-scroll-track
+  // Phase boundaries — synced with 680vh track in styles.css
   const P1   = 0.20; // name starts dissolving
   const P2   = 0.40; // role fully in; HOLD begins
-  const HOLD = 0.60; // hold ends; content reveal begins (40% of 560vh ≈ 2.2 screens)
+  const HOLD = 0.60; // hold ends; Phase 4 (content reveal) begins
 
   let ticking = false;
+
+  const showWrapper = () => { if (wrapper) wrapper.style.display = ''; };
+  const hideWrapper = () => { if (wrapper) wrapper.style.display = 'none'; };
 
   const update = () => {
     const scrollable = track.offsetHeight - window.innerHeight;
@@ -158,10 +161,12 @@ const runCinematicTimeline = () => {
     const progress   = clamp(raw / scrollable, 0, 1);
 
     if (progress < P1) {
-      // ── PHASE 1: Name held, centered ─────────────────────────────────
+      // ── PHASE 1: Name held, centered ────────────────────────────────
+      showWrapper();
       nameEl.style.display   = '';
       nameEl.style.opacity   = 1;
       nameEl.style.transform = 'translateY(0)';
+      roleEl.style.display   = '';
       roleEl.style.opacity   = 0;
       roleEl.style.transform = 'translateY(32px)';
       reveal.style.display   = 'none';
@@ -171,9 +176,11 @@ const runCinematicTimeline = () => {
     } else if (progress < P2) {
       // ── PHASE 2: Cross-dissolve name → Software Engineer ─────────────
       const t = easeOut((progress - P1) / (P2 - P1));
+      showWrapper();
       nameEl.style.display   = '';
       nameEl.style.opacity   = 1 - t;
       nameEl.style.transform = `translateY(${lerp(0, -28, t)}px)`;
+      roleEl.style.display   = '';
       roleEl.style.opacity   = t;
       roleEl.style.transform = `translateY(${lerp(32, 0, t)}px)`;
       reveal.style.display   = 'none';
@@ -182,8 +189,10 @@ const runCinematicTimeline = () => {
 
     } else if (progress < HOLD) {
       // ── HOLD: Software Engineer alone, centered — breathe ────────────
+      showWrapper();
       nameEl.style.opacity   = 0;
       nameEl.style.display   = 'none';
+      roleEl.style.display   = '';
       roleEl.style.opacity   = 1;
       roleEl.style.transform = 'translateY(0)';
       reveal.style.display   = 'none';
@@ -191,17 +200,28 @@ const runCinematicTimeline = () => {
       document.documentElement.classList.remove('header-visible');
 
     } else {
-      // ── PHASE 3: Layout shifts left; bio + CTA fade in ───────────────
-      const t = easeOut((progress - HOLD) / (1 - HOLD));
-      nameEl.style.opacity   = 0;
-      nameEl.style.display   = 'none';
-      roleEl.style.opacity   = 1;
-      roleEl.style.transform = 'translateY(0)';
+      // ── PHASE 4: Role fades OUT → bio + CTA fade IN (clean, no heading) ──
+      const t      = easeOut((progress - HOLD) / (1 - HOLD));
+      // Role dissolves out in first 25% of Phase 4
+      const roleT  = clamp(t * 4, 0, 1);
+      const roleFade = 1 - roleT;
+      if (roleFade <= 0.01) {
+        hideWrapper(); // collapse the wrapper once role is invisible
+        roleEl.style.display = 'none';
+      } else {
+        showWrapper();
+        roleEl.style.display   = '';
+        roleEl.style.opacity   = roleFade;
+        roleEl.style.transform = `translateY(${lerp(0, -20, roleT)}px)`;
+      }
+      nameEl.style.opacity = 0;
+      nameEl.style.display = 'none';
+      // Reveal content fades in after a brief overlap window
       reveal.style.display   = 'block';
-      reveal.style.opacity   = clamp(t * 1.5, 0, 1);
-      reveal.style.transform = `translateY(${lerp(28, 0, t)}px)`;
+      reveal.style.opacity   = clamp((t - 0.10) * 1.8, 0, 1);
+      reveal.style.transform = `translateY(${lerp(28, 0, Math.min(t * 1.4, 1))}px)`;
       hero.classList.add('stage-3');
-      if (t > 0.3) document.documentElement.classList.add('header-visible');
+      if (t > 0.35) document.documentElement.classList.add('header-visible');
     }
 
     ticking = false;
@@ -211,7 +231,7 @@ const runCinematicTimeline = () => {
     if (!ticking) { requestAnimationFrame(update); ticking = true; }
   }, { passive: true });
 
-  update(); // set initial state on load
+  update();
 };
 runCinematicTimeline();
 

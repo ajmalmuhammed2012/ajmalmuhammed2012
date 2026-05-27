@@ -144,16 +144,16 @@ a {
 .menu-toggle { display: none; flex-direction: column; gap: 4px; width: 18px; background: transparent; border: none; }
 .menu-toggle span { width: 100%; height: 1.5px; background-color: var(--ink); }
 
-/* --- HERO SCROLL TRACK: 560vh gives Phase 3 content ~2 full screens of hold time ---
+/* --- HERO SCROLL TRACK: 680vh gives Phase 4 content ~2.7 screens of hold time ---
    Phase layout (JS-driven, see script.js):
-     0-20%  Name held centered
-     20-40% Cross-dissolve → Software Engineer
-     40-60% HOLD: Software Engineer alone
-     60-100% Content reveal (40% × 560 = 224vh ≈ 2.2 screens of hold)
+     0-20%  Name held centered       (136vh)
+     20-40% Cross-dissolve           (136vh)
+     40-60% HOLD: Software Engineer  (136vh)
+     60-100% Phase 4 reveal          (272vh ≈ 2.7 screens)
 */
 .hero-scroll-track {
   position: relative;
-  height: 560vh;
+  height: 680vh;
 }
 
 /* --- HERO STAGING MATRIX (Sticky + Dead Center Alignment) --- */
@@ -166,6 +166,8 @@ a {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  /* Ensure hero always renders above subsequent sections (marquee, etc.) */
+  z-index: 2;
 }
 
 .hero-shade {
@@ -217,7 +219,7 @@ a {
 }
 
 /* --- STAGE CLASSES: structural/layout only, JS owns opacity/transform --- */
-/* Stage 3: centered → left-aligned editorial layout */
+/* Stage 3 / Phase 4: centered → left-aligned, content-forward layout */
 .hero.stage-3 {
   align-items: flex-start;
   padding-top: 14vh;
@@ -231,6 +233,14 @@ a {
   text-align: left;
   letter-spacing: -0.035em;
   transition: font-size 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Full-brightness text in Phase 4 (hero-copy defaults to var(--muted)) */
+.hero.stage-3 .hero-copy {
+  color: var(--ink);
+}
+/* Tighter meta spacing so it doesn't push below the viewport */
+.hero.stage-3 .hero-meta {
+  margin-top: 28px;
 }
 
 .hero-copy { max-width: 600px; margin: 0; color: var(--muted); font-size: 1.35rem; line-height: 1.55; }
