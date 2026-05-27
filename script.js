@@ -227,18 +227,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileEl = document.querySelector("#profile");
     if (profileEl && canvas) {
       const profileRect = profileEl.getBoundingClientRect();
-      const profileHeight = profileEl.offsetHeight;
-      
-      const startFade = window.innerHeight;
-      const endFade = window.innerHeight / 2 - profileHeight / 2;
+      const startFade = window.innerHeight / 2;
+      const endFade = 0;
       
       let canvasOpacity = 1;
       if (profileRect.top <= startFade) {
         if (profileRect.top <= endFade) {
           canvasOpacity = 0;
         } else {
-          const pFade = (startFade - profileRect.top) / (startFade - endFade);
-          canvasOpacity = Math.max(0, Math.min(1, 1 - pFade));
+          canvasOpacity = Math.max(0, Math.min(1, profileRect.top / startFade));
         }
       }
       canvas.style.opacity = canvasOpacity;
@@ -364,8 +361,8 @@ document.addEventListener("DOMContentLoaded", () => {
           if (dist < 120) {
             ctx.globalAlpha = 1 - dist / 120;
             ctx.beginPath();
-            ctx.moveTo(Math.round(particles[i].x), Math.round(particles[i].y));
-            ctx.lineTo(Math.round(particles[j].x), Math.round(particles[j].y));
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
             ctx.stroke();
           }
         }
@@ -381,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const sizeMult = near ? 1 + 0.5 * (1 - d / 160) : 1;
 
         ctx.beginPath();
-        ctx.arc(Math.round(p.x), Math.round(p.y), p.size * sizeMult, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size * sizeMult, 0, Math.PI * 2);
         ctx.fillStyle = near ? canvasColors.nodeHover : canvasColors.nodeRest;
         ctx.fill();
       });
