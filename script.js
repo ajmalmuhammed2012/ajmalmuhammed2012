@@ -107,10 +107,14 @@ if (canvas) {
       }
     }
 
-    // Render pass
+    // Render pass — orange glow for nodes near the cursor
     particles.forEach(p => {
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = canvasColors.nodeRest; ctx.fill();
+      const dx = pointer.x - p.x;
+      const dy = pointer.y - p.y;
+      const nearCursor = pointer.active && Math.hypot(dx, dy) < 180;
+      ctx.beginPath(); ctx.arc(p.x, p.y, nearCursor ? p.size * 1.4 : p.size, 0, Math.PI * 2);
+      ctx.fillStyle = nearCursor ? canvasColors.nodeHover : canvasColors.nodeRest;
+      ctx.fill();
     });
     requestAnimationFrame(draw);
   };
@@ -122,86 +126,91 @@ if (canvas) {
 }
 
 // 4. CINEMATIC SCROLL-DRIVEN HERO TIMELINE
-// Drives the 3-phase hero reveal via scroll progress (0→1) across the 300vh scroll track.
-// All opacity/transform are set via JS+rAF so they're perfectly tied to scroll position.
+// 4 phases across a 420vh scroll track:
+//   Phase 1 (0→24%):   "Ajmal Muhammed" centered and held
+//   Phase 2 (24→48%):  Cross-dissolve to "Software Engineer"
+//   HOLD   (48→68%):   "Software Engineer" alone, centered — gives the reader time
+//   Phase 3 (68→100%): Layout shifts left, bio + buttons fade in
 const runCinematicTimeline = () => {
-  const track    = document.querySelector('.hero-scroll-track');
-  const hero     = document.getElementById('timeline-hero');
-  const nameEl   = document.getElementById('headline-name');
-  const roleEl   = document.getElementById('headline-role');
-  const reveal   = document.querySelector('.hero-reveal-block');
+  const track  = document.querySelector('.hero-scroll-track');
+  const hero   = document.getElementById('timeline-hero');
+  const nameEl = document.getElementById('headline-name');
+  const roleEl = document.getElementById('headline-role');
+  const reveal = document.querySelector('.hero-reveal-block');
 
   if (!track || !hero || !nameEl || !roleEl || !reveal) return;
 
-  // Ease-out cubic: motion decelerates into each phase boundary
-  const easeOut  = t => 1 - Math.pow(1 - t, 3);
-  const clamp    = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  const lerp     = (a, b, t) => a + (b - a) * t;
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  const clamp   = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const lerp    = (a, b, t)  => a + (b - a) * t;
 
-  // Phase boundaries (fraction of total scroll progress 0→1)
-  const P1 = 0.33; // name starts fading out
-  const P2 = 0.66; // role is fully visible; content reveal begins
+  // Phase boundaries as fractions of total scroll progress (0 → 1)
+  const P1   = 0.24; // name starts dissolving
+  const P2   = 0.48; // role fully in; HOLD begins
+  const HOLD = 0.68; // hold ends; content reveal begins
 
   let ticking = false;
 
   const update = () => {
-    // Progress within the sticky scroll track
     const scrollable = track.offsetHeight - window.innerHeight;
-    const raw = -track.getBoundingClientRect().top;
-    const progress = clamp(raw / scrollable, 0, 1);
+    const raw        = -track.getBoundingClientRect().top;
+    const progress   = clamp(raw / scrollable, 0, 1);
 
     if (progress < P1) {
-      // ── PHASE 1: Name fully visible, centered ──────────────────────────
-      nameEl.style.display  = '';
-      nameEl.style.opacity  = 1;
+      // ── PHASE 1: Name held, centered ─────────────────────────────────
+      nameEl.style.display   = '';
+      nameEl.style.opacity   = 1;
       nameEl.style.transform = 'translateY(0)';
-      roleEl.style.opacity  = 0;
+      roleEl.style.opacity   = 0;
       roleEl.style.transform = 'translateY(32px)';
-      reveal.style.display  = 'none';
-      reveal.style.opacity  = 0;
+      reveal.style.display   = 'none';
       hero.classList.remove('stage-3');
       document.documentElement.classList.remove('header-visible');
 
     } else if (progress < P2) {
-      // ── PHASE 2: Cross-dissolve name → role ───────────────────────────
-      const t = easeOut((progress - P1) / (P2 - P1)); // 0→1 within phase
-      nameEl.style.display  = '';
-      nameEl.style.opacity  = 1 - t;
+      // ── PHASE 2: Cross-dissolve name → Software Engineer ─────────────
+      const t = easeOut((progress - P1) / (P2 - P1));
+      nameEl.style.display   = '';
+      nameEl.style.opacity   = 1 - t;
       nameEl.style.transform = `translateY(${lerp(0, -28, t)}px)`;
-      roleEl.style.opacity  = t;
+      roleEl.style.opacity   = t;
       roleEl.style.transform = `translateY(${lerp(32, 0, t)}px)`;
-      reveal.style.display  = 'none';
-      reveal.style.opacity  = 0;
+      reveal.style.display   = 'none';
+      hero.classList.remove('stage-3');
+      document.documentElement.classList.remove('header-visible');
+
+    } else if (progress < HOLD) {
+      // ── HOLD: Software Engineer alone, centered — breathe ────────────
+      nameEl.style.opacity   = 0;
+      nameEl.style.display   = 'none';
+      roleEl.style.opacity   = 1;
+      roleEl.style.transform = 'translateY(0)';
+      reveal.style.display   = 'none';
       hero.classList.remove('stage-3');
       document.documentElement.classList.remove('header-visible');
 
     } else {
-      // ── PHASE 3: Role stays; content block fades in ───────────────────
-      const t = easeOut((progress - P2) / (1 - P2)); // 0→1 within phase
-      nameEl.style.opacity  = 0;
-      nameEl.style.display  = 'none';
-      roleEl.style.opacity  = 1;
+      // ── PHASE 3: Layout shifts left; bio + CTA fade in ───────────────
+      const t = easeOut((progress - HOLD) / (1 - HOLD));
+      nameEl.style.opacity   = 0;
+      nameEl.style.display   = 'none';
+      roleEl.style.opacity   = 1;
       roleEl.style.transform = 'translateY(0)';
-      reveal.style.display  = 'block';
-      reveal.style.opacity  = clamp(t * 1.6, 0, 1);
-      reveal.style.transform = `translateY(${lerp(24, 0, t)}px)`;
-      // Stage-3 class only handles layout shift (text-align/font-size), not animation
+      reveal.style.display   = 'block';
+      reveal.style.opacity   = clamp(t * 1.5, 0, 1);
+      reveal.style.transform = `translateY(${lerp(28, 0, t)}px)`;
       hero.classList.add('stage-3');
-      if (t > 0.35) document.documentElement.classList.add('header-visible');
+      if (t > 0.3) document.documentElement.classList.add('header-visible');
     }
 
     ticking = false;
   };
 
   window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(update);
-      ticking = true;
-    }
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
   }, { passive: true });
 
-  // Run once on load to set initial state
-  update();
+  update(); // set initial state on load
 };
 runCinematicTimeline();
 

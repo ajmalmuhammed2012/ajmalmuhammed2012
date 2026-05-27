@@ -144,10 +144,10 @@ a {
 .menu-toggle { display: none; flex-direction: column; gap: 4px; width: 18px; background: transparent; border: none; }
 .menu-toggle span { width: 100%; height: 1.5px; background-color: var(--ink); }
 
-/* --- HERO SCROLL TRACK: gives hero 300vh of scroll distance while pinning inner content --- */
+/* --- HERO SCROLL TRACK: gives hero 420vh of scroll distance while pinning inner content --- */
 .hero-scroll-track {
   position: relative;
-  height: 300vh;
+  height: 420vh;
 }
 
 /* --- HERO STAGING MATRIX (Sticky + Dead Center Alignment) --- */
@@ -212,10 +212,13 @@ a {
 
 /* --- STAGE CLASSES: only structural/layout changes, NO opacity/transform (JS owns those) --- */
 /* Stage 3 shifts the layout from centered to left-aligned editorial style */
+.hero.stage-3 {
+  align-items: flex-start;
+  padding-top: 14vh;
+}
 .hero.stage-3 .cinematic-headline-wrapper {
   min-height: auto;
   justify-items: start;
-  transition: min-height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .hero.stage-3 #headline-role {
   font-size: clamp(2.2rem, 6vw, 4.2rem);
