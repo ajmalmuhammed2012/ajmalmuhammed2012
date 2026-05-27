@@ -209,6 +209,9 @@ const runCinematicTimeline = () => {
     reveal.style.opacity   = '1';
     reveal.style.visibility = 'visible';
 
+    // Force layout reflow so the browser calculates accurate client coordinates
+    const _reflow = document.body.offsetHeight;
+
     const nameRect = nameEl.getBoundingClientRect();
     const roleRect = roleEl.getBoundingClientRect();
     const viewportCenterX = window.innerWidth / 2;
@@ -251,23 +254,24 @@ const runCinematicTimeline = () => {
 
     // 1. Name Animation: Fades out and slides up gently in range [0.0, 0.30]
     const t_name = easeInOut(clamp((progress - 0.0) / 0.30, 0, 1));
-    const ty_name = nameOffset.y - 40 * t_name;
+    const tx_name = Math.round(nameOffset.x);
+    const ty_name = Math.round(nameOffset.y - 40 * t_name);
     nameEl.style.opacity = 1 - t_name;
-    nameEl.style.transform = `translate3d(${nameOffset.x}px, ${ty_name}px, 0) scale(1.15)`;
+    nameEl.style.transform = `translate3d(${tx_name}px, ${ty_name}px, 0) scale(1.15)`;
 
     // 2. Role Animation: Fades/rises in range [0.10, 0.40], then docks in range [0.45, 0.85]
     const t_role_in = easeInOut(clamp((progress - 0.10) / 0.30, 0, 1));
     let tx_role, ty_role, scale_role;
 
     if (progress < 0.45) {
-      tx_role = roleOffset.x;
-      ty_role = roleOffset.y + 40 * (1 - t_role_in);
+      tx_role = Math.round(roleOffset.x);
+      ty_role = Math.round(roleOffset.y + 40 * (1 - t_role_in));
       scale_role = 1.15;
     } else {
       const t_dock = easeInOut(clamp((progress - 0.45) / 0.40, 0, 1));
-      tx_role = roleOffset.x * (1 - t_dock);
-      ty_role = roleOffset.y * (1 - t_dock);
-      scale_role = lerp(1.15, 1.0, t_dock);
+      tx_role = Math.round(roleOffset.x * (1 - t_dock));
+      ty_role = Math.round(roleOffset.y * (1 - t_dock));
+      scale_role = parseFloat(lerp(1.15, 1.0, t_dock).toFixed(3));
     }
 
     roleEl.style.opacity = t_role_in;
@@ -275,8 +279,9 @@ const runCinematicTimeline = () => {
 
     // 3. Brief Animation: Fades in and slides up in range [0.55, 0.90]
     const t_reveal = easeInOut(clamp((progress - 0.55) / 0.35, 0, 1));
+    const ty_reveal = Math.round(28 * (1 - t_reveal));
     reveal.style.opacity = t_reveal;
-    reveal.style.transform = `translate3d(0, ${28 * (1 - t_reveal)}px, 0)`;
+    reveal.style.transform = `translate3d(0, ${ty_reveal}px, 0)`;
     reveal.style.pointerEvents = t_reveal > 0.15 ? 'auto' : 'none';
     reveal.style.visibility = t_reveal > 0 ? 'visible' : 'hidden';
 
@@ -310,6 +315,13 @@ const runCinematicTimeline = () => {
     calculateOffsets();
     triggerUpdate();
   });
+
+  if (document.fonts) {
+    document.fonts.ready.then(() => {
+      calculateOffsets();
+      triggerUpdate();
+    });
+  }
 
   // Run initial pass
   calculateOffsets();
