@@ -136,7 +136,7 @@ if (canvas) {
 // 4. CINEMATIC SCROLL-DRIVEN HERO TIMELINE
 // 4 phases across a 680vh scroll track:
 //   Phase 1 (0→20%):  "Ajmal Muhammed" centered and held
-//   Phase 2 (20→40%): Cross-dissolve → "Software Engineer" (easeOut)
+//   Phase 2 (20→40%): Cross-dissolve → "Software Engineer" (easeInOut)
 //   HOLD   (40→60%):  "Software Engineer" alone, centered — reader breathes
 //   Phase 4 (60→100%): Dock role to static position, bio + buttons fade in
 const runCinematicTimeline = () => {
@@ -152,6 +152,9 @@ const runCinematicTimeline = () => {
 
   // Easing functions
   const easeOut   = t => 1 - Math.pow(1 - t, 3);
+  const easeInOut = t => t < 0.5
+    ? 4 * t * t * t
+    : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
   const lerp  = (a, b, t)   => a + (b - a) * t;
 
@@ -199,12 +202,23 @@ const runCinematicTimeline = () => {
   };
 
   let ticking = false;
+  let currentProgress = 0;
+  let targetProgress  = 0;
 
   const showWrapper = () => { if (wrapper) wrapper.style.display = ''; };
 
   const update = () => {
-    const scrollable = track.offsetHeight - window.innerHeight;
-    const progress   = clamp(-track.getBoundingClientRect().top / scrollable, 0, 1);
+    // Smooth progress toward target using high-performance lerp
+    const diff = targetProgress - currentProgress;
+    if (Math.abs(diff) < 0.0001) {
+      currentProgress = targetProgress;
+      ticking = false;
+    } else {
+      currentProgress += diff * 0.22; // highly responsive, jitter-filtering lerp
+      requestAnimationFrame(update);
+    }
+
+    const progress = currentProgress;
 
     if (progress < P1) {
       // ── PHASE 1: Name held, centered ─────────────────────────────────
@@ -224,8 +238,8 @@ const runCinematicTimeline = () => {
       document.documentElement.classList.remove('header-visible');
 
     } else if (progress < P2) {
-      // ── PHASE 2: Cross-dissolve name → Software Engineer ─────────────────
-      const t = easeOut((progress - P1) / (P2 - P1));
+      // ── PHASE 2: Cross-dissolve name → Software Engineer (easeInOut for zero pops) ──
+      const t = easeInOut((progress - P1) / (P2 - P1));
       showWrapper();
       nameEl.style.opacity   = 1 - t;
       nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(1.15)`;
@@ -281,30 +295,32 @@ const runCinematicTimeline = () => {
       hero.classList.add('stage-3');
       if (t > 0.3) document.documentElement.classList.add('header-visible');
     }
-
-    ticking = false;
   };
 
-  window.addEventListener('scroll', () => {
+  const triggerUpdate = () => {
+    const scrollable = track.offsetHeight - window.innerHeight;
+    targetProgress = scrollable > 0 ? clamp(-track.getBoundingClientRect().top / scrollable, 0, 1) : 0;
     if (!ticking) {
       ticking = true;
       requestAnimationFrame(update);
     }
-  }, { passive: true });
+  };
+
+  window.addEventListener('scroll', triggerUpdate, { passive: true });
 
   window.addEventListener('resize', () => {
     calculateOffsets();
-    update();
+    triggerUpdate();
   });
 
   window.addEventListener('load', () => {
     calculateOffsets();
-    update();
+    triggerUpdate();
   });
 
   // Run initial pass
   calculateOffsets();
-  update();
+  triggerUpdate();
 };
 runCinematicTimeline();
 
