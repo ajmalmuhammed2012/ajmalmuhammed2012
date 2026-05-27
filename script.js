@@ -10,6 +10,8 @@ const initialTheme = getInitialTheme();
 document.documentElement.setAttribute("data-theme", initialTheme);
 
 document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.querySelector("#antigravity-canvas");
+
   // --- SET CURRENT COPYRIGHT YEAR ---
   const yearEl = document.querySelector("#year");
   if (yearEl) {
@@ -220,6 +222,27 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (window.scrollY < 20) {
       document.documentElement.classList.remove("header-visible");
     }
+
+    // Fade constellation background based on scrolling into #profile section
+    const profileEl = document.querySelector("#profile");
+    if (profileEl && canvas) {
+      const profileRect = profileEl.getBoundingClientRect();
+      const profileHeight = profileEl.offsetHeight;
+      
+      const startFade = window.innerHeight;
+      const endFade = window.innerHeight / 2 - profileHeight / 2;
+      
+      let canvasOpacity = 1;
+      if (profileRect.top <= startFade) {
+        if (profileRect.top <= endFade) {
+          canvasOpacity = 0;
+        } else {
+          const pFade = (startFade - profileRect.top) / (startFade - endFade);
+          canvasOpacity = Math.max(0, Math.min(1, 1 - pFade));
+        }
+      }
+      canvas.style.opacity = canvasOpacity;
+    }
   };
 
   let scrollTicking = false;
@@ -245,7 +268,6 @@ document.addEventListener("DOMContentLoaded", () => {
   calculateOffsets();
 
   // --- OPTIMIZED ANTIGRAVITY CONSTELLATION ENGINE ---
-  const canvas = document.querySelector("#antigravity-canvas");
   if (canvas) {
     const ctx = canvas.getContext("2d");
     const pointer = { active: false, x: 0, y: 0, tx: 0, ty: 0 };
@@ -394,7 +416,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const shouldBeActive = activeSections.size > 0;
       if (shouldBeActive) {
-        canvas.style.opacity = "1";
         const wasActive = canvasActive;
         canvasActive = true;
         if (!wasActive) {
@@ -406,8 +427,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }, { threshold: 0.01 });
 
-    // Observe all sections from the top down to the end of the AI Leverage section
-    document.querySelectorAll("#hero, #track-record, #profile, #ai").forEach(sec => {
+    // Observe all sections from the top down to the end of the Profile section
+    document.querySelectorAll("#hero, #track-record, #profile").forEach(sec => {
       if (sec) canvasObserver.observe(sec);
     });
     
