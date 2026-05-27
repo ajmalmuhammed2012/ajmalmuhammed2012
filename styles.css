@@ -387,12 +387,13 @@ a {
 }
 
 .outcome-pill, .tech-stack span {
+  display: inline-flex;
+  align-items: center;
   font-size: 0.8rem;
-  padding: 6px 14px 6px 16px;
+  padding: 6px 14px;
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  border-left: 3px solid var(--accent);
-  border-radius: 8px;
+  border-radius: var(--radius-apple);
   color: var(--muted);
   font-weight: 500;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
@@ -403,31 +404,57 @@ a {
   will-change: transform;
 }
 
-.tech-stack span {
-  border-left-color: var(--accent-hover);
+/* Premium symmetric inline dot accent */
+.outcome-pill::before, .tech-stack span::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.tech-stack span::before {
+  background-color: var(--accent-hover);
 }
 
 .outcome-pill:hover, .tech-stack span:hover {
   transform: translateY(-3px) scale(1.03);
   color: var(--ink);
   background: var(--bg-subtle);
-  border-top-color: var(--glass-border);
-  border-right-color: var(--glass-border);
-  border-bottom-color: var(--glass-border);
+  border-color: var(--accent) !important;
   box-shadow: var(--card-shadow), 0 0 12px var(--accent-glow);
 }
 
 .tech-stack span:hover {
+  border-color: var(--accent-hover) !important;
   box-shadow: var(--card-shadow), 0 0 12px var(--accent-hover-glow);
 }
 
 .ai-section { background: var(--bg-canvas); border-bottom: 1px solid var(--line); }
 .timeline { display: flex; flex-direction: column; gap: 32px; }
 .role-card { padding: 32px; }
-.role-header { display: flex; justify-content: space-between; margin-bottom: 18px; }
+.role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  gap: 20px;
+}
 .role-header .company { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); font-weight: 600; }
-.role-header h3 { font-size: 1.4rem; }
-.role-header .date { font-size: 0.9rem; color: var(--muted); background: rgba(255,255,255,0.05); padding: 4px 12px; border-radius: 12px; }
+.role-header h3 { font-size: 1.4rem; margin: 4px 0 0; }
+.role-header .date {
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 6px 12px;
+  border-radius: 12px;
+  white-space: nowrap;
+  align-self: flex-start;
+}
 .role-card ul { margin: 16px 0 0; padding-left: 20px; }
 .role-card li { margin-bottom: 10px; font-size: 1.1rem; color: var(--muted); }
 
@@ -498,7 +525,8 @@ a {
   .nav-links a { width: 100%; padding: 14px 24px; font-size: 0.85rem; }
   .editorial-row, .stats-grid, .ai-grid, .skills-grid, .recommendation-grid, .credentials-section { grid-template-columns: 1fr; gap: 32px; }
   .contact-grid { grid-template-columns: 1fr; }
-  .role-header { flex-direction: column; gap: 6px; }
+  .role-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .role-header .date { align-self: flex-start; margin-top: 4px; }
 
   /* --- MOBILE SYSTEM DESIGNS --- */
   .hero {
