@@ -57,6 +57,11 @@ if (canvas) {
   let width = window.innerWidth;
   let height = window.innerHeight;
 
+  // Scroll velocity tracking variables
+  let lastScrollY = window.scrollY;
+  let targetVelocity = 0;
+  let smoothedVelocity = 0;
+
   const resizeCanvas = () => {
     width = window.innerWidth; height = window.innerHeight;
     canvas.width = width; canvas.height = height;
@@ -74,6 +79,15 @@ if (canvas) {
   const draw = () => {
     ctx.clearRect(0, 0, width, height);
 
+    // Calculate scroll velocity per frame
+    const currentScrollY = window.scrollY;
+    const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+    lastScrollY = currentScrollY;
+
+    // Smooth the velocity input to create a fluid momentum decay
+    targetVelocity = Math.min(scrollDelta, 100); // Clamp to avoid huge spikes
+    smoothedVelocity += (targetVelocity - smoothedVelocity) * 0.08;
+
     // Lerp display pointer toward the raw target — creates a soft spring feel
     if (pointer.active) {
       pointer.x += (pointer.tx - pointer.x) * 0.08;
@@ -83,11 +97,25 @@ if (canvas) {
     ctx.lineWidth = 1.2;
     ctx.strokeStyle = canvasColors.line;
 
-    // Float + repulsion pass
+    // Float + upward velocity drift + repulsion pass
     particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > width)  p.vx *= -1;
-      if (p.y < 0 || p.y > height) p.vy *= -1;
+      const speedMult = 1 + smoothedVelocity * 0.06;
+      const driftY = -smoothedVelocity * 0.20; // Float upwards on scroll down
+
+      p.x += p.vx * speedMult;
+      p.y += p.vy * speedMult + driftY;
+
+      // Bounce horizontally
+      if (p.x < 0 || p.x > width) p.vx *= -1;
+
+      // Infinite vertical wrap-around for fluid upward flow
+      if (p.y < 0) {
+        p.y = height;
+        p.x = Math.random() * width;
+      } else if (p.y > height) {
+        p.y = 0;
+        p.x = Math.random() * width;
+      }
 
       if (pointer.active) {
         const dx = pointer.x - p.x, dy = pointer.y - p.y;
