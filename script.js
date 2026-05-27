@@ -11,11 +11,6 @@ document.documentElement.setAttribute("data-theme", initialTheme);
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.querySelector("#antigravity-canvas");
-  const isLowEnd = (navigator.deviceMemory && navigator.deviceMemory <= 2) || 
-                   (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
-  if (isLowEnd) {
-    document.documentElement.classList.add("low-end");
-  }
 
   // --- SET CURRENT COPYRIGHT YEAR ---
   const yearEl = document.querySelector("#year");
@@ -230,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Fade constellation background based on scrolling into #profile section
     const profileEl = document.querySelector("#profile");
-    if (profileEl && canvas && !isLowEnd) {
+    if (profileEl && canvas) {
       const profileRect = profileEl.getBoundingClientRect();
       const startFade = window.innerHeight / 2;
       const endFade = 0;
@@ -271,10 +266,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- OPTIMIZED ANTIGRAVITY CONSTELLATION ENGINE ---
   if (canvas) {
-    if (isLowEnd) {
-      canvas.style.display = "none";
-      return;
-    }
     const ctx = canvas.getContext("2d");
     const pointer = { active: false, x: 0, y: 0, tx: 0, ty: 0 };
     const particles = [];
@@ -354,10 +345,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (pointer.active) {
           const dx = pointer.x - p.x;
           const dy = pointer.y - p.y;
-          const d = Math.hypot(dx, dy);
-          if (d < 160) {
-            p.x -= (dx / d) * 0.8;
-            p.y -= (dy / d) * 0.8;
+          const dSq = dx * dx + dy * dy;
+          if (dSq < 25600) { // 160 * 160
+            const d = Math.sqrt(dSq);
+            if (d > 0) {
+              p.x -= (dx / d) * 0.8;
+              p.y -= (dy / d) * 0.8;
+            }
           }
         }
       });
@@ -366,8 +360,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const pCount = particles.length;
       for (let i = 0; i < pCount; i++) {
         for (let j = i + 1; j < pCount; j++) {
-          const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
-          if (dist < 120) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < 14400) { // 120 * 120
+            const dist = Math.sqrt(distSq);
             ctx.globalAlpha = 1 - dist / 120;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
@@ -382,9 +379,9 @@ document.addEventListener("DOMContentLoaded", () => {
       particles.forEach(p => {
         const dx = pointer.x - p.x;
         const dy = pointer.y - p.y;
-        const d = Math.hypot(dx, dy);
-        const near = pointer.active && d < 160;
-        const sizeMult = near ? 1 + 0.5 * (1 - d / 160) : 1;
+        const dSq = dx * dx + dy * dy;
+        const near = pointer.active && dSq < 25600; // 160 * 160
+        const sizeMult = near ? 1 + 0.5 * (1 - Math.sqrt(dSq) / 160) : 1;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * sizeMult, 0, Math.PI * 2);
