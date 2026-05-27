@@ -175,8 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isMobile = window.innerWidth < 860;
 
-    // Phase 1 (0 -> 0.3): Name centered and fades out
-    const pName = Math.max(0, Math.min(1, p / 0.3));
+    // Phase 1 (0 -> 0.25): Name centered and fades out
+    const pName = Math.max(0, Math.min(1, p / 0.25));
     const nameOpacity = 1 - pName;
     const nameScale = 1.15 - pName * 0.15;
     nameEl.style.opacity = nameOpacity;
@@ -188,17 +188,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     nameEl.style.pointerEvents = nameOpacity > 0.15 ? "auto" : "none";
 
-    // Phase 2 (0.1 -> 0.4) & 3 (0.45 -> 0.85): Role fades in centered, then docks
-    const pRoleIn = Math.max(0, Math.min(1, (p - 0.1) / 0.3));
+    // Phase 2 (0.05 -> 0.25) & 3 (0.25 -> 0.60): Role fades in centered, then docks
+    const pRoleIn = Math.max(0, Math.min(1, (p - 0.05) / 0.20));
     const roleOpacity = pRoleIn;
     
     let rx, ry, rs;
-    if (p < 0.45) {
+    if (p < 0.25) {
       rx = isMobile ? 0 : roleOffset.x;
       ry = roleOffset.y;
       rs = 1.15;
     } else {
-      const pDock = Math.max(0, Math.min(1, (p - 0.45) / 0.4));
+      const pDock = Math.max(0, Math.min(1, (p - 0.25) / 0.35));
       rx = isMobile ? 0 : roleOffset.x * (1 - pDock);
       ry = roleOffset.y * (1 - pDock);
       rs = 1.15 - pDock * 0.15;
@@ -206,9 +206,9 @@ document.addEventListener("DOMContentLoaded", () => {
     roleEl.style.opacity = roleOpacity;
     roleEl.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${rs})`;
 
-    // Phase 4 (0.55 -> 0.9): Bio details fade in
+    // Phase 4 (0.70 -> 0.95): Bio details fade/slide in after scroll delay
     if (revealEl) {
-      const pReveal = Math.max(0, Math.min(1, (p - 0.55) / 0.35));
+      const pReveal = Math.max(0, Math.min(1, (p - 0.70) / 0.25));
       revealEl.style.opacity = pReveal;
       revealEl.style.transform = `translate3d(0, ${20 * (1 - pReveal)}px, 0)`;
       revealEl.style.pointerEvents = pReveal > 0.15 ? "auto" : "none";
