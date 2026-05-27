@@ -1,4 +1,4 @@
-// 1. ANCHOR & BLINK SUPPRESSION GUARD (Executes instantly to prevent flash bounds)
+// 1. ANCHOR & BLINK SUPPRESSION GUARD (Prevents hardware layout shifts)
 if (window.history && history.scrollRestoration) {
   history.scrollRestoration = 'manual';
 }
@@ -15,7 +15,7 @@ window.addEventListener('beforeunload', () => {
 });
 
 
-// 2. TIMING METRIC CONTEXT COMPILING
+// 2. TIMING METRIC SYNCHRONIZATION
 document.addEventListener("DOMContentLoaded", () => {
   const year = document.querySelector("#year");
   if (year) {
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// 3. COLOR SYSTEM MANAGEMENT MATRICES
+// 3. COLOR INTERFACE TOGGLE MANAGEMENT
 const themeToggle = document.querySelector("#theme-toggle");
 const rootElement = document.documentElement;
 
@@ -48,7 +48,7 @@ if (themeToggle) {
   });
 }
 
-// Mobile Slide Menu Interface
+// Mobile Capsule Drawer Trigger
 const menuToggle = document.querySelector(".menu-toggle");
 const siteHeader = document.querySelector(".site-header");
 const navLinks = document.querySelectorAll(".nav-links a");
@@ -68,7 +68,7 @@ if (menuToggle && siteHeader) {
 }
 
 
-// 4. HIGH-DENSITY INTERACTIVE ANTIGRAVITY ENGINE
+// 4. INTERACTIVE ANTIGRAVITY PARTICLE CANVAS ENGINE
 const canvas = document.querySelector("#antigravity-canvas");
 if (canvas) {
   const ctx = canvas.getContext("2d");
@@ -193,32 +193,39 @@ if (canvas) {
 }
 
 
-// 5. FLUID HIGH-FIDELITY FLUID SCROLL NARRATIVE CHOREOGRAPHY TIMELINE
+// 5. CONTINUOUS SCROLL-PINNING SCRUB CONTROLLER
 window.addEventListener('scroll', () => {
+  const track = document.querySelector('.scroll-track');
   const container = document.getElementById('timeline-hero');
-  const scrollPosition = window.scrollY;
-
-  if (container) {
-    // Stage 1 -> Stage 2 Threshold (Swaps text layers)
-    if (scrollPosition > 80 && scrollPosition <= 240) {
+  
+  if (track && container) {
+    const trackTop = track.offsetTop;
+    const trackHeight = track.offsetHeight - window.innerHeight;
+    const scrollPosition = window.scrollY - trackTop;
+    
+    // Calculates a fluid animation fraction value between 0.00 and 1.00
+    const progress = Math.max(0, Math.min(1, scrollPosition / trackHeight));
+    
+    // Stage 1: Centered Title Splash Screen (0% -> 25% of scroll track length)
+    if (progress <= 0.25) {
+      container.className = "hero stage-1";
+      document.documentElement.classList.remove('header-visible');
+    } 
+    // Stage 2: Smooth Cross-Fading Text Morph (25% -> 65% of scroll track length)
+    else if (progress > 0.25 && progress <= 0.65) {
       container.className = "hero stage-2";
       document.documentElement.classList.remove('header-visible');
     } 
-    // Stage 2 -> Stage 3 Threshold (Left snaps name layout line and slides down header capsule)
-    else if (scrollPosition > 240) {
+    // Stage 3: Full Layout Grid Reveal Snap (65% -> 100% of scroll track length)
+    else if (progress > 0.65) {
       container.className = "hero stage-3";
       document.documentElement.classList.add('header-visible');
-    } 
-    // Reset to absolute zero baseline launch loop
-    else {
-      container.className = "hero stage-1";
-      document.documentElement.classList.remove('header-visible');
     }
   }
 }, { passive: true });
 
 
-// 6. STABILIZED DELAYED SECTIONS REVEAL INTERCEPT
+// 6. DEFERRED INTERSECTION REVEAL CONTROLLER
 const revealElements = document.querySelectorAll(".scroll-reveal");
 
 if (revealElements.length > 0) {
