@@ -381,18 +381,35 @@ document.addEventListener("DOMContentLoaded", () => {
       pointer.active = false;
     });
 
-    // IntersectionObserver to pause the canvas draw loop when scrolled away
+    // IntersectionObserver to pause/resume the canvas draw loop and control visibility
+    const activeSections = new Set();
     const canvasObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        const wasActive = canvasActive;
-        canvasActive = entry.isIntersecting;
-        if (canvasActive && !wasActive) {
-          requestAnimationFrame(draw); // resume loop
+        if (entry.isIntersecting) {
+          activeSections.add(entry.target.id);
+        } else {
+          activeSections.delete(entry.target.id);
         }
       });
+
+      const shouldBeActive = activeSections.size > 0;
+      if (shouldBeActive) {
+        canvas.style.opacity = "1";
+        const wasActive = canvasActive;
+        canvasActive = true;
+        if (!wasActive) {
+          requestAnimationFrame(draw); // resume loop
+        }
+      } else {
+        canvas.style.opacity = "0";
+        canvasActive = false;
+      }
     }, { threshold: 0.01 });
 
-    canvasObserver.observe(document.querySelector("#hero"));
+    // Observe all sections from the top down to the end of the AI Leverage section
+    document.querySelectorAll("#hero, #track-record, #profile, #ai").forEach(sec => {
+      if (sec) canvasObserver.observe(sec);
+    });
     
     resizeCanvas();
     draw();
