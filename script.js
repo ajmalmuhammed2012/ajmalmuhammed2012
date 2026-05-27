@@ -219,81 +219,46 @@ const runCinematicTimeline = () => {
     }
 
     const progress = currentProgress;
+    showWrapper();
 
-    if (progress < P1) {
-      // ── PHASE 1: Name held, centered ─────────────────────────────────
-      showWrapper();
-      nameEl.style.opacity   = 1;
-      nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(1.15)`;
-      
-      roleEl.style.opacity   = 0;
-      roleEl.style.transform = `translate3d(${roleOffset.x}px, ${roleOffset.y}px, 0) scale(1.15)`;
-      
-      reveal.style.opacity   = 0;
-      reveal.style.transform = 'translate3d(0, 28px, 0)';
-      reveal.style.pointerEvents = 'none';
-      reveal.style.visibility = 'hidden';
-      
-      hero.classList.remove('stage-3');
-      document.documentElement.classList.remove('header-visible');
+    // 1. Name Animation: Fades out and slides up gently in range [0.0, 0.30]
+    const t_name = easeInOut(clamp((progress - 0.0) / 0.30, 0, 1));
+    const ty_name = nameOffset.y - 40 * t_name;
+    nameEl.style.opacity = 1 - t_name;
+    nameEl.style.transform = `translate3d(${nameOffset.x}px, ${ty_name}px, 0) scale(1.15)`;
 
-    } else if (progress < P2) {
-      // ── PHASE 2: Cross-dissolve name → Software Engineer (easeInOut for zero pops) ──
-      const t = easeInOut((progress - P1) / (P2 - P1));
-      showWrapper();
-      nameEl.style.opacity   = 1 - t;
-      nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(1.15)`;
-      
-      roleEl.style.opacity   = t;
-      roleEl.style.transform = `translate3d(${roleOffset.x}px, ${roleOffset.y}px, 0) scale(1.15)`;
-      
-      reveal.style.opacity   = 0;
-      reveal.style.transform = 'translate3d(0, 28px, 0)';
-      reveal.style.pointerEvents = 'none';
-      reveal.style.visibility = 'hidden';
-      
-      hero.classList.remove('stage-3');
-      document.documentElement.classList.remove('header-visible');
+    // 2. Role Animation: Fades/rises in range [0.10, 0.40], then docks in range [0.45, 0.85]
+    const t_role_in = easeInOut(clamp((progress - 0.10) / 0.30, 0, 1));
+    let tx_role, ty_role, scale_role;
 
-    } else if (progress < HOLD) {
-      // ── HOLD: Software Engineer alone, centered ─────────────────────────
-      showWrapper();
-      nameEl.style.opacity   = 0;
-      nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(1.15)`;
-      
-      roleEl.style.opacity   = 1;
-      roleEl.style.transform = `translate3d(${roleOffset.x}px, ${roleOffset.y}px, 0) scale(1.15)`;
-      
-      reveal.style.opacity   = 0;
-      reveal.style.transform = 'translate3d(0, 28px, 0)';
-      reveal.style.pointerEvents = 'none';
-      reveal.style.visibility = 'hidden';
-      
-      hero.classList.remove('stage-3');
-      document.documentElement.classList.remove('header-visible');
-
+    if (progress < 0.45) {
+      tx_role = roleOffset.x;
+      ty_role = roleOffset.y + 40 * (1 - t_role_in);
+      scale_role = 1.15;
     } else {
-      // ── PHASE 4: Transition to final layout + bio fades in ──────────────────
-      const t = easeOut((progress - HOLD) / (1 - HOLD));
-      showWrapper();
-      nameEl.style.opacity   = 0;
-      nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(1.15)`;
-      
-      roleEl.style.opacity   = 1;
-      // Interpolate position and scale back to layout defaults (0, 0) and 1.0
-      const tx = roleOffset.x * (1 - t);
-      const ty = roleOffset.y * (1 - t);
-      const scale = lerp(1.15, 1.0, t);
-      roleEl.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
-      
-      // Bio fades in and slides up from 28px
-      reveal.style.opacity   = t;
-      reveal.style.transform = `translate3d(0, ${28 * (1 - t)}px, 0)`;
-      reveal.style.pointerEvents = t > 0.15 ? 'auto' : 'none';
-      reveal.style.visibility = t > 0 ? 'visible' : 'hidden';
-      
+      const t_dock = easeInOut(clamp((progress - 0.45) / 0.40, 0, 1));
+      tx_role = roleOffset.x * (1 - t_dock);
+      ty_role = roleOffset.y * (1 - t_dock);
+      scale_role = lerp(1.15, 1.0, t_dock);
+    }
+
+    roleEl.style.opacity = t_role_in;
+    roleEl.style.transform = `translate3d(${tx_role}px, ${ty_role}px, 0) scale(${scale_role})`;
+
+    // 3. Brief Animation: Fades in and slides up in range [0.55, 0.90]
+    const t_reveal = easeInOut(clamp((progress - 0.55) / 0.35, 0, 1));
+    reveal.style.opacity = t_reveal;
+    reveal.style.transform = `translate3d(0, ${28 * (1 - t_reveal)}px, 0)`;
+    reveal.style.pointerEvents = t_reveal > 0.15 ? 'auto' : 'none';
+    reveal.style.visibility = t_reveal > 0 ? 'visible' : 'hidden';
+
+    // 4. Auxiliary Stages & Header triggers
+    if (progress > 0.55) {
       hero.classList.add('stage-3');
-      if (t > 0.3) document.documentElement.classList.add('header-visible');
+      document.documentElement.classList.add('header-visible');
+    } else {
+      hero.classList.remove('stage-3');
+      document.documentElement.classList.remove('header-visible');
     }
   };
 

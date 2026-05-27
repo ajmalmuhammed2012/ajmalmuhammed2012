@@ -217,6 +217,7 @@ a {
   justify-items: start;
   width: 100%;
   min-height: 140px;
+  pointer-events: none;
 }
 
 .hero-title {
