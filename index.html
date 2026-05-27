@@ -10,20 +10,21 @@
 </head>
 <body>
 
-  <!-- Hardware-Accelerated Ambient Background -->
-  <div class="ambient-background" aria-hidden="true">
+  <!-- Ambient Constellation & Spotlight Background -->
+  <div class="ambient-bg" aria-hidden="true">
     <div class="grid-overlay"></div>
     <div class="spotlight"></div>
-    <canvas id="antigravity-canvas" class="hero-canvas"></canvas>
+    <canvas id="antigravity-canvas"></canvas>
   </div>
 
-  <!-- Glassmorphic Sticky Header -->
-  <header class="site-header" aria-label="Site navigation">
+  <!-- Glassmorphic Site Header -->
+  <header class="site-header" id="site-header" aria-label="Site navigation">
     <div class="header-inner">
       <a class="brand" href="#hero" aria-label="Ajmal Muhammed home">
         <span class="brand-node" aria-hidden="true">AM</span>
-        <div class="brand-text"><span class="brand-main">Ajmal Muhammed</span></div>
+        <span class="brand-text">Ajmal Muhammed</span>
       </a>
+      
       <nav class="nav-links" id="main-nav" aria-label="Main menu">
         <a href="#ai">AI Leverage</a>
         <a href="#experience">Experience</a>
@@ -31,14 +32,13 @@
         <a href="#projects">Projects</a>
         <a href="#testimonials">Testimonials</a>
       </nav>
+
       <div class="header-actions">
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light and dark theme">
-          <!-- Sun Icon for Dark Theme -->
           <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.22" x2="5.64" y2="17.84"></line><line x1="18.36" y1="5.64" x2="19.78" y2="7.06"></line></svg>
-          <!-- Moon Icon for Light Theme -->
           <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
-        <button class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="main-nav">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="main-nav">
           <span></span><span></span>
         </button>
         <a class="header-action" href="#contact" id="header-contact-btn">Contact</a>
@@ -46,10 +46,10 @@
     </div>
   </header>
 
-  <!-- Main Grid Layout -->
+  <!-- Main Content Layout -->
   <main>
     
-    <!-- Hero Section with Cinematic Scroll-driven Transition -->
+    <!-- Hero Section with Cinematic Transition -->
     <div class="hero-scroll-track" id="hero-track">
       <section class="hero" id="hero">
         <div class="hero-content">
@@ -57,7 +57,7 @@
             <h1 id="headline-name" class="hero-title">Ajmal Muhammed</h1>
             <h2 id="headline-role" class="hero-title role-title">Software Engineer</h2>
           </div>
-          <div class="hero-reveal-block">
+          <div class="hero-reveal-block" id="hero-reveal">
             <p class="hero-copy">
               I am Ajmal Muhammed, a Senior Software Engineer with 5+ years of experience building enterprise-grade .NET, Web API, cloud-integrated, and data-driven systems for financial services platforms.
             </p>
@@ -321,7 +321,7 @@
       </div>
     </section>
 
-    <!-- Testimonials / Recognition Section -->
+    <!-- Testimonials Section -->
     <section class="section-shell proof-section scroll-reveal" id="testimonials">
       <div class="proof-heading">
         <span class="kicker">Recognition</span>
@@ -370,7 +370,7 @@
       </div>
     </section>
 
-    <!-- Credentials Section (Education & Certifications) -->
+    <!-- Credentials Section -->
     <section class="section-shell credentials-section scroll-reveal" id="credentials" aria-label="Credentials">
       <div class="glass-card education-block">
         <span class="kicker">Education</span>

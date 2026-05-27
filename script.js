@@ -119,15 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: true });
 
-  document.addEventListener("pointerleave", () => {
-    mouseX = -9999;
-    mouseY = -9999;
-  });
-
   // --- RESPONSIVE SCROLL-DRIVEN TRANSITIONS ---
   const nameEl = document.querySelector("#headline-name");
   const roleEl = document.querySelector("#headline-role");
-  const revealEl = document.querySelector(".hero-reveal-block");
+  const revealEl = document.querySelector("#hero-reveal");
   const heroTrack = document.querySelector("#hero-track");
   
   let nameOffset = { x: 0, y: 0 };
@@ -212,10 +207,10 @@ document.addEventListener("DOMContentLoaded", () => {
       revealEl.style.pointerEvents = pReveal > 0.15 ? "auto" : "none";
     }
 
-    // Toggle Sticky Header visibility
-    if (p > 0.55) {
+    // Toggle Sticky Header visibility: latch once scrolled, hide only at top
+    if (p > 0.55 || window.scrollY > 150) {
       document.documentElement.classList.add("header-visible");
-    } else {
+    } else if (window.scrollY < 20) {
       document.documentElement.classList.remove("header-visible");
     }
   };
