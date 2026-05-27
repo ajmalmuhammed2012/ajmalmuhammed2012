@@ -254,13 +254,18 @@ a {
   border-bottom: 1px solid var(--line);
 }
 
+/* --- FIXED ANTI-GRAVITY CANVAS ENGINE MATRIX --- */
 .hero-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
+  position: fixed;            /* <--- CHANGE THIS FROM ABSOLUTE TO FIXED */
+  top: 0;
+  left: 0;
+  width: 100vw;               /* Forces full-viewport width footprint */
+  height: 100vh;              /* Forces full-viewport height footprint */
+  z-index: 0;                 /* Keeps it layered safely behind all text blocks */
+  pointer-events: auto;       /* Ensures your mouse tracking logic stays active */
   opacity: var(--canvas-opacity);
+  
+  /* Precision hardware rendering filters to kill Safari blurring bugs */
   image-rendering: -webkit-optimize-contrast; 
   image-rendering: crisp-edges;               
   transform: translateZ(0);                   
