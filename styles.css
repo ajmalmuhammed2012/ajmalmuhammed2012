@@ -363,11 +363,11 @@ main {
 
 .hero-copy {
   font-size: clamp(1.1rem, 2.2vw, 1.35rem);
-  color: var(--fg-muted);
+  color: var(--fg);
   max-width: 780px;
   line-height: 1.55;
   margin-bottom: 32px;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .hero-actions-row {
