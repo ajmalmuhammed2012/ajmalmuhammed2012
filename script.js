@@ -145,9 +145,10 @@ const runCinematicTimeline = () => {
   const lerp    = (a, b, t)  => a + (b - a) * t;
 
   // Phase boundaries as fractions of total scroll progress (0 → 1)
-  const P1   = 0.24; // name starts dissolving
-  const P2   = 0.48; // role fully in; HOLD begins
-  const HOLD = 0.68; // hold ends; content reveal begins
+  // Matches the 560vh track — see styles.css comment above .hero-scroll-track
+  const P1   = 0.20; // name starts dissolving
+  const P2   = 0.40; // role fully in; HOLD begins
+  const HOLD = 0.60; // hold ends; content reveal begins (40% of 560vh ≈ 2.2 screens)
 
   let ticking = false;
 

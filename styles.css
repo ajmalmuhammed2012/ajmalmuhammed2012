@@ -144,10 +144,16 @@ a {
 .menu-toggle { display: none; flex-direction: column; gap: 4px; width: 18px; background: transparent; border: none; }
 .menu-toggle span { width: 100%; height: 1.5px; background-color: var(--ink); }
 
-/* --- HERO SCROLL TRACK: gives hero 420vh of scroll distance while pinning inner content --- */
+/* --- HERO SCROLL TRACK: 560vh gives Phase 3 content ~2 full screens of hold time ---
+   Phase layout (JS-driven, see script.js):
+     0-20%  Name held centered
+     20-40% Cross-dissolve → Software Engineer
+     40-60% HOLD: Software Engineer alone
+     60-100% Content reveal (40% × 560 = 224vh ≈ 2.2 screens of hold)
+*/
 .hero-scroll-track {
   position: relative;
-  height: 420vh;
+  height: 560vh;
 }
 
 /* --- HERO STAGING MATRIX (Sticky + Dead Center Alignment) --- */
@@ -210,8 +216,8 @@ a {
   /* display controlled by JS */
 }
 
-/* --- STAGE CLASSES: only structural/layout changes, NO opacity/transform (JS owns those) --- */
-/* Stage 3 shifts the layout from centered to left-aligned editorial style */
+/* --- STAGE CLASSES: structural/layout only, JS owns opacity/transform --- */
+/* Stage 3: centered → left-aligned editorial layout */
 .hero.stage-3 {
   align-items: flex-start;
   padding-top: 14vh;
@@ -341,6 +347,35 @@ a {
   .editorial-row, .stats-grid, .ai-grid, .skills-grid, .recommendation-grid, .credentials-section { grid-template-columns: 1fr; gap: 32px; }
   .contact-grid { grid-template-columns: 1fr; }
   .role-header { flex-direction: column; gap: 6px; }
+
+  /* --- MOBILE STAGE-3 HERO FIX ---
+     On mobile the header is fixed at top:0 / height:48px.
+     We push content down just far enough to clear it, then compact
+     the reveal block so everything fits inside one viewport height.
+  */
+  .hero.stage-3 {
+    padding-top: 62px; /* 48px header + 14px breathing room */
+    align-items: flex-start;
+  }
+  .hero.stage-3 #headline-role {
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
+  }
+  .hero.stage-3 .hero-reveal-block {
+    margin-top: 20px;
+  }
+  .hero.stage-3 .hero-copy {
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+  .hero.stage-3 .hero-actions-row {
+    margin-top: 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  /* Hide the meta row on mobile — too tall, pushes content off-screen */
+  .hero.stage-3 .hero-meta {
+    display: none;
+  }
 }
 @media (max-width: 580px) {
   .hero-meta { grid-template-columns: 1fr; gap: 16px; }
