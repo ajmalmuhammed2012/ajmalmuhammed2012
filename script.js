@@ -1,44 +1,28 @@
-// 1. ANCHOR & BLINK SUPPRESSION GUARD (Prevents hardware layout shifts)
+// 1. SCROLL RESTORATION BASELINES
 if (window.history && history.scrollRestoration) {
   history.scrollRestoration = 'manual';
 }
-
 window.scrollTo(0, 0);
 
-if (window.location.hash) {
-  window.scrollTo(0, 0);
-  setTimeout(() => { window.scrollTo(0, 0); }, 1);
-}
-
-window.addEventListener('beforeunload', () => {
-  window.scrollTo(0, 0);
-});
-
-
-// 2. TIMING METRIC SYNCHRONIZATION
 document.addEventListener("DOMContentLoaded", () => {
   const year = document.querySelector("#year");
-  if (year) {
-    year.textContent = new Date().getFullYear();
-  }
+  if (year) year.textContent = new Date().getFullYear();
 });
 
-
-// 3. COLOR INTERFACE TOGGLE MANAGEMENT
+// 2. THEME MATRIX SYSTEM CONFIGS
 const themeToggle = document.querySelector("#theme-toggle");
 const rootElement = document.documentElement;
 
 const getCanvasColors = () => {
   const isDarkMode = rootElement.getAttribute("data-theme") === "dark";
   return {
-    nodeRest: isDarkMode ? "rgba(45, 226, 206, 0.95)" : "rgba(20, 165, 150, 0.95)",
+    nodeRest: isDarkMode ? "rgba(45, 226, 206, 0.95)" : "rgba(20, 165, 150, 0.85)",
     nodeHover: isDarkMode ? "rgba(255, 110, 0, 1)" : "rgba(230, 85, 0, 1)",
     line: isDarkMode ? "rgba(45, 226, 206, 0.25)" : "rgba(20, 165, 150, 0.18)"
   };
 };
 
 let canvasColors = getCanvasColors();
-
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
     const currentTheme = rootElement.getAttribute("data-theme");
@@ -48,7 +32,7 @@ if (themeToggle) {
   });
 }
 
-// Mobile Capsule Drawer Trigger
+// Mobile Slide Menu Channel
 const menuToggle = document.querySelector(".menu-toggle");
 const siteHeader = document.querySelector(".site-header");
 const navLinks = document.querySelectorAll(".nav-links a");
@@ -58,197 +42,118 @@ if (menuToggle && siteHeader) {
     const isOpen = siteHeader.classList.toggle("menu-is-open");
     menuToggle.setAttribute("aria-expanded", isOpen);
   });
-
-  navLinks.forEach((link) => {
+  navLinks.forEach(link => {
     link.addEventListener("click", () => {
       siteHeader.classList.remove("menu-is-open");
-      menuToggle.setAttribute("aria-expanded", "false");
     });
   });
 }
 
-
-// 4. INTERACTIVE ANTIGRAVITY PARTICLE CANVAS ENGINE
+// 3. HIGH-DENSITY INTERACTIVE CANVAS CONSTELLATION ENGINE
 const canvas = document.querySelector("#antigravity-canvas");
 if (canvas) {
   const ctx = canvas.getContext("2d");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const pointer = { active: false, x: 0, y: 0 };
   const particles = [];
-  let width = 0;
-  let height = 0;
-  let animationFrame = 0;
+  let width = window.innerWidth;
+  let height = window.innerHeight;
 
   const resizeCanvas = () => {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const rect = canvas.getBoundingClientRect();
-    width = rect.width;
-    height = rect.height;
-    canvas.width = Math.floor(width * dpr);
-    canvas.height = Math.floor(height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
     particles.length = 0;
-    const totalParticles = width < 680 ? 40 : 75;
-
-    for (let i = 0; i < totalParticles; i++) {
-      const homeX = Math.random() * width;
-      const homeY = Math.random() * height;
+    const total = width < 680 ? 35 : 70;
+    for (let i = 0; i < total; i++) {
       particles.push({
-        homeX: homeX,
-        homeY: homeY,
-        x: homeX,
-        y: homeY,
-        vx: 0,
-        vy: 0,
-        baseSize: 4.5,
-        size: 4.5,
-        phase: Math.random() * Math.PI * 2,
-        isHovered: false
+        x: Math.random() * width, y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+        size: 3.5, phase: Math.random() * Math.PI * 2
       });
     }
   };
 
-  const draw = (time = 0) => {
+  const draw = () => {
     ctx.clearRect(0, 0, width, height);
-    const pointerRadius = Math.min(240, width * 0.32);
-
-    particles.forEach((particle) => {
-      const driftX = Math.cos(time * 0.00015 + particle.phase) * 12;
-      const driftY = Math.sin(time * 0.00015 + particle.phase) * 12;
-      const targetX = particle.homeX + driftX;
-      const targetY = particle.homeY + driftY;
-
-      particle.isHovered = false;
-      particle.size = particle.baseSize;
-
-      if (pointer.active) {
-        const dx = pointer.x - particle.x;
-        const dy = pointer.y - particle.y;
-        const dist = Math.hypot(dx, dy) || 1;
-        
-        if (dist < pointerRadius) {
-          particle.isHovered = true;
-          particle.size = particle.baseSize + (1 - dist / pointerRadius) * 1.5; 
-          
-          const force = (1 - dist / pointerRadius) * 2.0;
-          const angle = Math.atan2(dy, dx);
-          particle.vx -= Math.cos(angle) * force;
-          particle.vy -= Math.sin(angle) * force;
-        }
-      }
-
-      particle.vx += (targetX - particle.x) * 0.015;
-      particle.vy += (targetY - particle.y) * 0.015;
-      particle.vx *= 0.84;
-      particle.vy *= 0.84;
-      particle.x += particle.vx;
-      particle.y += particle.vy;
-    });
-
-    const maxLinkDistance = width < 680 ? 100 : 140;
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.2;
     ctx.strokeStyle = canvasColors.line;
 
+    // Fluid background float pass
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > width) p.vx *= -1;
+      if (p.y < 0 || p.y > height) p.vy *= -1;
+
+      if (pointer.active) {
+        const dx = pointer.x - p.x;
+        const dy = pointer.y - p.y;
+        const d = Math.hypot(dx, dy);
+        if (d < 180) {
+          p.x -= (dx / d) * 0.8;
+          p.y -= (dy / d) * 0.8;
+        }
+      }
+    });
+
+    // Node link mapping pass
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
-        const p1 = particles[i];
-        const p2 = particles[j];
-        const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-        
-        if (dist < maxLinkDistance) {
-          ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.stroke();
+        const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+        if (dist < 120) {
+          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
         }
       }
     }
 
-    particles.forEach((particle) => {
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-      ctx.fillStyle = particle.isHovered ? canvasColors.nodeHover : canvasColors.nodeRest;
-      ctx.fill();
+    // Render pass
+    particles.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = canvasColors.nodeRest; ctx.fill();
     });
-
-    if (!reduceMotion.matches) {
-      animationFrame = window.requestAnimationFrame(draw);
-    }
+    requestAnimationFrame(draw);
   };
-
-  const updatePointer = (event) => {
-    const rect = canvas.getBoundingClientRect();
-    pointer.active = true;
-    pointer.x = event.clientX - rect.left;
-    pointer.y = event.clientY - rect.top;
-  };
-
-  resizeCanvas();
-  draw();
 
   window.addEventListener("resize", resizeCanvas);
-  window.addEventListener("pointermove", updatePointer, { passive: true });
-  window.addEventListener("pointerleave", () => { pointer.active = false; });
+  window.addEventListener("pointermove", e => { pointer.active = true; pointer.x = e.clientX; pointer.y = e.clientY; });
+  window.addEventListener("pointerleave", () => pointer.active = false);
+  resizeCanvas(); draw();
 }
 
+// 4. FLOATING SCREEN RATIO DYNAMIC INTERCEPTOR (The True Fix)
+const runCinematicTimeline = () => {
+  const hero = document.getElementById('timeline-hero');
+  if (!hero) return;
 
-// 5. CONTINUOUS SCROLL-PINNING SCRUB CONTROLLER
-window.addEventListener('scroll', () => {
-  const track = document.querySelector('.scroll-track');
-  const container = document.getElementById('timeline-hero');
-  
-  if (track && container) {
-    const trackTop = track.offsetTop;
-    const trackHeight = track.offsetHeight - window.innerHeight;
-    const scrollPosition = window.scrollY - trackTop;
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
     
-    // Calculates a fluid animation fraction value between 0.00 and 1.00
-    const progress = Math.max(0, Math.min(1, scrollPosition / trackHeight));
-    
-    // Stage 1: Centered Title Splash Screen (0% -> 25% of scroll track length)
-    if (progress <= 0.25) {
-      container.className = "hero stage-1";
+    // Calculates states based on strict pixel milestones relative to viewport heights
+    if (scrollY <= 120) {
+      if (hero.className !== "hero stage-1") hero.className = "hero stage-1";
       document.documentElement.classList.remove('header-visible');
     } 
-    // Stage 2: Smooth Cross-Fading Text Morph (25% -> 65% of scroll track length)
-    else if (progress > 0.25 && progress <= 0.65) {
-      container.className = "hero stage-2";
+    else if (scrollY > 120 && scrollY <= 320) {
+      if (hero.className !== "hero stage-2") hero.className = "hero stage-2";
       document.documentElement.classList.remove('header-visible');
     } 
-    // Stage 3: Full Layout Grid Reveal Snap (65% -> 100% of scroll track length)
-    else if (progress > 0.65) {
-      container.className = "hero stage-3";
+    else if (scrollY > 320) {
+      if (hero.className !== "hero stage-3") hero.className = "hero stage-3";
       document.documentElement.classList.add('header-visible');
     }
-  }
-}, { passive: true });
+  }, { passive: true });
+};
+runCinematicTimeline();
 
-
-// 6. DEFERRED INTERSECTION REVEAL CONTROLLER
+// 5. SECTIONS REVEAL OBSERVER
 const revealElements = document.querySelectorAll(".scroll-reveal");
-
 if (revealElements.length > 0) {
-  const observerOptions = {
-    root: null,
-    rootMargin: "0px 0px -10% 0px", 
-    threshold: 0.05
-  };
-
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("reveal-active");
-        revealObserver.unobserve(entry.target);
-      }
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("reveal-active"); obs.unobserve(e.target); }
     });
-  }, observerOptions);
-
-  setTimeout(() => {
-    document.documentElement.classList.add("js-enabled");
-    
-    revealElements.forEach((element) => {
-      revealObserver.observe(element);
-    });
-  }, 400);
+  }, { threshold: 0.05 });
+  document.documentElement.classList.add("js-enabled");
+  revealElements.forEach(el => obs.observe(el));
 }
