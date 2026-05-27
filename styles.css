@@ -548,6 +548,7 @@ a {
   .role-header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .role-header .date { align-self: flex-start; margin-top: 4px; }
   .hero-scroll-track { height: 320vh; } /* Reduced scroll weight on mobile */
+  .section-shell { padding: 64px 20px; } /* Tighten vertical spacing on mobile */
 
   /* --- MOBILE SYSTEM DESIGNS --- */
   .hero {
@@ -584,6 +585,16 @@ a {
   .meta-item .label { font-size: 0.65rem; }
   .meta-item .value { font-size: 0.85rem; }
 }
+
+@media (max-height: 680px) and (max-width: 860px) {
+  /* Prevent vertical overflow/clipping on short mobile screens like iPhone SE */
+  .hero { padding-top: 64px; }
+  .cinematic-headline-wrapper { min-height: 80px; }
+  .hero-reveal-block { margin-top: 12px; }
+  .hero-copy { font-size: 0.95rem; line-height: 1.4; }
+  .hero-meta { margin-top: 16px; padding-top: 12px; gap: 12px 8px; }
+}
+
 @media (max-width: 580px) {
   .hero-meta { grid-template-columns: 1fr; gap: 12px; text-align: center; }
   .hero-actions-row { flex-direction: column; align-items: center; }
@@ -591,10 +602,16 @@ a {
 }
 
 @media (max-width: 480px) {
+  .section-shell {
+    padding: 48px 12px; /* Open up horizontal margins for content on small mobile viewports */
+  }
   .role-card {
     padding: 20px 16px; /* Free up spacing on narrow mobile devices */
   }
   .stats-grid article, .ai-grid article, .skills-grid article, .quote-card, .education-block, .cert-block {
-    padding: 20px;
+    padding: 20px 16px;
+  }
+  .editorial-row, .stats-grid, .ai-grid, .skills-grid, .recommendation-grid, .credentials-section {
+    gap: 16px; /* Tighter layout grid gap on small mobile viewports */
   }
 }
