@@ -11,8 +11,8 @@ document.documentElement.setAttribute("data-theme", initialTheme);
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.querySelector("#antigravity-canvas");
-  const isLowEnd = (navigator.deviceMemory && navigator.deviceMemory <= 4) || 
-                   (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+  const isLowEnd = (navigator.deviceMemory && navigator.deviceMemory <= 2) || 
+                   (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
   if (isLowEnd) {
     document.documentElement.classList.add("low-end");
   }
