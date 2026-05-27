@@ -60,13 +60,12 @@ body {
   overflow-x: hidden;
   background-color: var(--bg);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
   line-height: 1.47059;
   letter-spacing: -0.022em;
   transition: background-color 0.4s ease, color 0.3s ease;
 }
 
-/* Prevent lower content from shifting or breaking grid flow during timelines */
 main {
   position: relative;
   width: 100%;
@@ -78,7 +77,7 @@ a {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* --- CEILING CAP HEADER CAP CAPSULE --- */
+/* --- SITE TOP NAVIGATION HEADER --- */
 .site-header {
   position: fixed;
   top: 12px;
@@ -90,14 +89,12 @@ a {
   height: 48px;
   pointer-events: none;
   
-  /* Hidden on load by default */
   opacity: 0;
   transform: translateY(-24px);
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
               transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Trigger Class loaded only in Stage 3 */
 .header-visible .site-header {
   opacity: 1;
   transform: translateY(0);
@@ -238,15 +235,22 @@ a {
   background-color: var(--ink);
 }
 
-/* --- THE CINEMATIC CHOREOGRAPHY HERO TIMELINE --- */
-.hero {
+/* --- THE CONTINUOUS PINNING CONTAINER PIPELINE --- */
+.scroll-track {
   position: relative;
-  min-height: 100svh;
+  height: 300vh;                    /* Generates smooth scrolling distance bounds */
+  background: var(--bg-canvas);
+}
+
+.hero {
+  position: sticky;                 /* Locks screen into the browser window frame */
+  top: 0;
+  height: 100svh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: var(--bg-canvas);
   border-bottom: 1px solid var(--line);
 }
 
@@ -274,6 +278,8 @@ a {
     rgba(255, 255, 255, 0) 40%, 
     rgba(0, 0, 0, 0.03) 100%
   );
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .hero-content {
@@ -287,19 +293,19 @@ a {
   flex-direction: column;
 }
 
-/* Overlapping headline structure prevents clipping jumps between loops */
+/* --- ADVANCED CSS GRID STACK (FINALLY FIXES MOBILE CENTERING) --- */
 .cinematic-headline-wrapper {
-  position: relative;
-  min-height: 110px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr;
   align-items: center;
-  justify-content: center;
+  justify-items: center;            /* Enforces centering across touch viewports */
   width: 100%;
+  min-height: 120px;
 }
 
 .hero-title {
-  position: absolute;
-  font-size: clamp(3rem, 7.5vw, 5.2rem);
+  grid-area: 1/1;                   /* Anchors elements into the same coordinate stack */
+  font-size: clamp(2.8rem, 7.5vw, 5.2rem);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.04em;
@@ -313,10 +319,9 @@ a {
 
 .hidden-role {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(24px);
 }
 
-/* Stage 3 target blocks container */
 .hero-reveal-block {
   opacity: 0;
   transform: translateY(30px);
@@ -325,28 +330,23 @@ a {
               transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ---> NARRATIVE TIMELINE STATES INJECTED VIA TRACKERS <--- */
-
-/* STAGE 1: Default Landing (Handled via CSS initial properties) */
-
-/* STAGE 2: Mid Scroll (Swaps your Name out for your Role) */
+/* --- NARRATIVE TIMELINE PROGRESSION STATES --- */
 .stage-2 #headline-name {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(-24px);
 }
 .stage-2 #headline-role {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* STAGE 3: Final Reveal Position (Snaps left, scales down, reveals everything) */
 .stage-3 #headline-name {
   opacity: 0;
   display: none;
 }
 .stage-3 .cinematic-headline-wrapper {
   min-height: auto;
-  justify-content: flex-start;
+  justify-items: start;             /* Snaps smoothly to left alignment on finish */
 }
 .stage-3 #headline-role {
   position: relative;
@@ -369,7 +369,7 @@ a {
   line-height: 1.55;
 }
 
-/* --- THE LIQUID GLASS REACTION BUTTONS --- */
+/* --- LIQUID GLASS ACTIONS MODULE --- */
 .hero-actions-row, .project-links {
   display: flex;
   align-items: center;
@@ -457,7 +457,7 @@ a {
   font-weight: 500;
 }
 
-/* --- MARQUEE --- */
+/* --- THE RUNNING MARQUEE --- */
 .marquee {
   overflow: hidden;
   padding: 18px 0;
@@ -480,7 +480,7 @@ a {
   text-transform: uppercase;
 }
 
-/* --- SECTION BOXES --- */
+/* --- SECTIONS CORE FRAME PARAMETERS --- */
 .section-shell {
   max-width: 1024px;
   margin: 0 auto;
@@ -517,7 +517,7 @@ a {
   margin: 0;
 }
 
-/* --- REBUILT LIQUID GLASS DATA TILES (24PX EXTRA FLUID ROUND) --- */
+/* --- EXTRA-FLUID GLASS CARD NODES (24PX RADII SPECS) --- */
 .glass-card {
   background: rgba(255, 255, 255, 0.45) !important;
   border-radius: var(--radius-apple) !important; 
@@ -617,7 +617,7 @@ a {
   color: var(--ink);
 }
 
-/* --- EXPERIENCE CHRONOLOGY --- */
+/* --- SYSTEM EXPERENTIAL TIMELINE --- */
 .ai-section {
   background: var(--bg-canvas);
   border-bottom: 1px solid var(--line);
@@ -674,7 +674,7 @@ a {
 .role-card ul { margin: 16px 0 0; padding-left: 20px; color: var(--muted); }
 .role-card li { margin-bottom: 10px; font-size: 1.1rem; }
 
-/* --- PROJECTS --- */
+/* --- PROJECTS LABS --- */
 .project-showcase {
   display: flex;
   flex-direction: column;
@@ -689,7 +689,7 @@ a {
   margin: 0;
 }
 
-/* --- RECOGNITION MATRICES --- */
+/* --- RECOGNITION MAPPING PANEL --- */
 .proof-section {
   background: var(--bg-subtle);
   border-bottom: 1px solid var(--line);
@@ -712,7 +712,7 @@ a {
 .cert-list { margin: 0; padding-left: 20px; }
 .cert-list li { font-size: 1.05rem; margin-bottom: 8px; }
 
-/* --- CONTACT POD LINK MATRIX WRAPPERS --- */
+/* --- CONTACT MODULE ACTIONS SHORTCUT GRIDS --- */
 .contact-section { background: var(--bg-canvas); }
 .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%; }
 
@@ -743,7 +743,7 @@ a {
   transform: translateY(-3px);
 }
 
-/* --- FOOTER CODES --- */
+/* --- FOOTER REGION ARCHITECTURE --- */
 .site-footer {
   display: flex;
   justify-content: center;
@@ -761,7 +761,7 @@ a {
   to { transform: translateX(-50%); }
 }
 
-/* --- SCROLL REVEAL CONFIGURATIONS --- */
+/* --- HIGH-PERFORMANCE HARDWARE OVERRIDING SCROLL REVEAL MATRICES --- */
 .scroll-reveal {
   opacity: 1;
   transform: none;
@@ -780,12 +780,15 @@ a {
               transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* --- RESPONSIVE SCREEN WRAPPERS --- */
+/* --- MOBILE & TOUCH TABLET RESPONSIVE MEDIA ADAPTATIONS --- */
 @media (max-width: 860px) {
   .site-header { top: 0; }
   .header-inner { width: 100%; border-radius: 0; border-top: none; border-left: none; border-right: none; }
   .menu-toggle { display: flex; }
   .header-action { display: none; }
+
+  /* Grid alignment stabilization on mobile devices */
+  .cinematic-headline-wrapper { min-height: 90px; }
 
   .nav-links {
     position: absolute;
