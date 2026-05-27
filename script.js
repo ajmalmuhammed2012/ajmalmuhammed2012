@@ -1,395 +1,418 @@
-// 1. SCROLL RESTORATION BASELINES (Only force to top if no deep-link hash exists)
-if (window.history && history.scrollRestoration) {
-  history.scrollRestoration = 'manual';
-}
-if (!window.location.hash) {
-  window.scrollTo(0, 0);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  const year = document.querySelector("#year");
-  if (year) year.textContent = new Date().getFullYear();
-});
-
-// 2. THEME MATRIX SYSTEM CONFIGS (With Local Storage Persistence)
-const themeToggle = document.querySelector("#theme-toggle");
-const rootElement = document.documentElement;
-
-// Load theme preference early to prevent theme flash
-const savedTheme = localStorage.getItem("portfolio-theme") || 
-  (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-rootElement.setAttribute("data-theme", savedTheme);
-
-const getCanvasColors = () => {
-  const isDarkMode = rootElement.getAttribute("data-theme") === "dark";
-  return {
-    nodeRest:  isDarkMode ? "rgba(45, 226, 206, 0.95)"  : "rgba(20, 165, 150, 0.85)",
-    nodeHover: isDarkMode ? "rgba(255, 110, 0, 1)"       : "rgba(230, 85, 0, 1)",
-    line:      isDarkMode ? "rgba(45, 226, 206, 0.25)"   : "rgba(20, 165, 150, 0.18)"
-  };
+// --- THEME MANAGEMENT SYSTEM ---
+// Initialize theme early to avoid style flash
+const getInitialTheme = () => {
+  const savedTheme = localStorage.getItem("portfolio-theme");
+  if (savedTheme) return savedTheme;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
-let canvasColors = getCanvasColors();
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    const currentTheme = rootElement.getAttribute("data-theme");
-    const nextTheme = currentTheme === "dark" ? "light" : "dark";
-    rootElement.setAttribute("data-theme", nextTheme);
-    localStorage.setItem("portfolio-theme", nextTheme);
-    canvasColors = getCanvasColors();
-  });
-}
+const initialTheme = getInitialTheme();
+document.documentElement.setAttribute("data-theme", initialTheme);
 
-// Mobile Slide Menu Channel
-const menuToggle = document.querySelector(".menu-toggle");
-const siteHeader = document.querySelector(".site-header");
-const navLinks   = document.querySelectorAll(".nav-links a");
+document.addEventListener("DOMContentLoaded", () => {
+  // --- SET CURRENT COPYRIGHT YEAR ---
+  const yearEl = document.querySelector("#year");
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
 
-if (menuToggle && siteHeader) {
-  menuToggle.addEventListener("click", () => {
-    const isOpen = siteHeader.classList.toggle("menu-is-open");
-    menuToggle.setAttribute("aria-expanded", isOpen);
-  });
-  navLinks.forEach(link => link.addEventListener("click", () => {
-    siteHeader.classList.remove("menu-is-open");
-  }));
-}
-
-// 3. HIGH-DENSITY INTERACTIVE CANVAS CONSTELLATION ENGINE
-const canvas = document.querySelector("#antigravity-canvas");
-if (canvas) {
-  const ctx = canvas.getContext("2d");
-  // Pointer has BOTH a raw target (tx/ty updated instantly) and a lerped
-  // display position (x/y) so the repulsion field trails the cursor smoothly.
-  const pointer = { active: false, x: 0, y: 0, tx: 0, ty: 0 };
-  const particles = [];
-  let width = window.innerWidth;
-  let height = window.innerHeight;
-
-  // Scroll velocity tracking variables
-  let lastScrollY = window.scrollY;
-  let targetVelocity = 0;
-  let smoothedVelocity = 0;
-
-  const resizeCanvas = () => {
-    width = window.innerWidth; height = window.innerHeight;
-    canvas.width = width; canvas.height = height;
-    particles.length = 0;
-    const total = width < 680 ? 35 : 70;
-    for (let i = 0; i < total; i++) {
-      particles.push({
-        x: Math.random() * width, y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-        size: 3.5, phase: Math.random() * Math.PI * 2
-      });
-    }
+  // --- THEME TOGGLER LOGIC ---
+  const themeToggle = document.querySelector("#theme-toggle");
+  let canvasColors = { nodeRest: "", nodeHover: "", line: "" };
+  
+  const getCanvasColors = () => {
+    const isDarkMode = document.documentElement.getAttribute("data-theme") === "dark";
+    return {
+      nodeRest:  isDarkMode ? "rgba(45, 226, 206, 0.95)"  : "rgba(15, 118, 110, 0.85)",
+      nodeHover: isDarkMode ? "rgba(255, 110, 0, 1)"       : "rgba(184, 68, 0, 1)",
+      line:      isDarkMode ? "rgba(45, 226, 206, 0.45)"   : "rgba(15, 118, 110, 0.35)"
+    };
   };
 
-  const draw = () => {
-    ctx.clearRect(0, 0, width, height);
+  canvasColors = getCanvasColors();
 
-    // Calculate scroll velocity per frame
-    const currentScrollY = window.scrollY;
-    const scrollDelta = Math.abs(currentScrollY - lastScrollY);
-    lastScrollY = currentScrollY;
-
-    // Smooth the velocity input to create a fluid momentum decay
-    targetVelocity = Math.min(scrollDelta, 100); // Clamp to avoid huge spikes
-    smoothedVelocity += (targetVelocity - smoothedVelocity) * 0.08;
-
-    // Lerp display pointer toward the raw target — creates a soft spring feel
-    if (pointer.active) {
-      pointer.x += (pointer.tx - pointer.x) * 0.08;
-      pointer.y += (pointer.ty - pointer.y) * 0.08;
-    }
-
-    ctx.lineWidth = 1.2;
-    ctx.strokeStyle = canvasColors.line;
-
-    // Float + upward velocity drift + repulsion pass
-    particles.forEach(p => {
-      const speedMult = 1 + smoothedVelocity * 0.06;
-      const driftY = -smoothedVelocity * 0.20; // Float upwards on scroll down
-
-      p.x += p.vx * speedMult;
-      p.y += p.vy * speedMult + driftY;
-
-      // Bounce horizontally
-      if (p.x < 0 || p.x > width) p.vx *= -1;
-
-      // Infinite vertical wrap-around for fluid upward flow
-      if (p.y < 0) {
-        p.y = height;
-        p.x = Math.random() * width;
-      } else if (p.y > height) {
-        p.y = 0;
-        p.x = Math.random() * width;
-      }
-
-      if (pointer.active) {
-        const dx = pointer.x - p.x, dy = pointer.y - p.y;
-        const d  = Math.hypot(dx, dy);
-        if (d < 180) { p.x -= (dx / d) * 0.9; p.y -= (dy / d) * 0.9; }
-      }
-    });
-
-    // Link pass
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
-        if (dist < 120) {
-          ctx.globalAlpha = 1 - dist / 120;
-          ctx.beginPath(); 
-          ctx.moveTo(Math.round(particles[i].x), Math.round(particles[i].y));
-          ctx.lineTo(Math.round(particles[j].x), Math.round(particles[j].y)); 
-          ctx.stroke();
-        }
-      }
-    }
-    ctx.globalAlpha = 1;
-
-    // Render pass — orange glow for nodes near the lerped cursor
-    particles.forEach(p => {
-      const dx = pointer.x - p.x, dy = pointer.y - p.y;
-      const d  = Math.hypot(dx, dy);
-      const near = pointer.active && d < 180;
-      // Smooth size using distance ratio rather than binary
-      const sizeMult = near ? 1 + 0.5 * (1 - d / 180) : 1;
-      ctx.beginPath(); 
-      ctx.arc(Math.round(p.x), Math.round(p.y), p.size * sizeMult, 0, Math.PI * 2);
-      ctx.fillStyle = near ? canvasColors.nodeHover : canvasColors.nodeRest;
-      ctx.fill();
-    });
-
-    requestAnimationFrame(draw);
-  };
-
-  window.addEventListener("resize", resizeCanvas);
-  window.addEventListener("pointermove", e => {
-    pointer.active = true;
-    pointer.tx = e.clientX; pointer.ty = e.clientY;
-  });
-  window.addEventListener("pointerleave", () => { pointer.active = false; });
-  resizeCanvas(); draw();
-}
-
-// 4. CINEMATIC SCROLL-DRIVEN HERO TIMELINE
-// 4 phases across a 680vh scroll track:
-//   Phase 1 (0→20%):  "Ajmal Muhammed" centered and held
-//   Phase 2 (20→40%): Cross-dissolve → "Software Engineer" (easeInOut)
-//   HOLD   (40→60%):  "Software Engineer" alone, centered — reader breathes
-//   Phase 4 (60→100%): Dock role to static position, bio + buttons fade in
-const runCinematicTimeline = () => {
-  const track       = document.querySelector('.hero-scroll-track');
-  const hero        = document.getElementById('timeline-hero');
-  const heroContent = document.querySelector('.hero-content');
-  const nameEl      = document.getElementById('headline-name');
-  const roleEl      = document.getElementById('headline-role');
-  const reveal      = document.querySelector('.hero-reveal-block');
-  const wrapper     = document.querySelector('.cinematic-headline-wrapper');
-
-  if (!track || !hero || !nameEl || !roleEl || !reveal) return;
-
-  // Easing functions
-  const easeOut   = t => 1 - Math.pow(1 - t, 3);
-  const easeInOut = t => t < 0.5
-    ? 4 * t * t * t
-    : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  const lerp  = (a, b, t)   => a + (b - a) * t;
-
-  // Phase boundaries — synced with 680vh track in styles.css
-  const P1   = 0.20;
-  const P2   = 0.40;
-  const HOLD = 0.60;
-
-  // Visual centering offsets (measured relative to final layout positions)
-  const nameOffset = { x: 0, y: 0 };
-  const roleOffset = { x: 0, y: 0 };
-
-  // Cache track height and viewport height to avoid layout thrashing in scroll loop
-  let trackHeight = 0;
-  let viewportHeight = 0;
-
-  const calculateOffsets = () => {
-    // Clear styles temporarily to get clean, un-transformed bounding boxes
-    const namePrev = nameEl.style.transform;
-    const rolePrev = roleEl.style.transform;
-    const revealPrev = reveal.style.transform;
-    const revealOpacityPrev = reveal.style.opacity;
-    const revealVisibilityPrev = reveal.style.visibility;
-
-    nameEl.style.transform = 'none';
-    roleEl.style.transform = 'none';
-    reveal.style.transform = 'none';
-    reveal.style.opacity   = '1';
-    reveal.style.visibility = 'visible';
-
-    // Force layout reflow so the browser calculates accurate client coordinates
-    const _reflow = document.body.offsetHeight;
-
-    const nameRect = nameEl.getBoundingClientRect();
-    const roleRect = roleEl.getBoundingClientRect();
-    const viewportCenterX = window.innerWidth / 2;
-    const viewportCenterY = window.innerHeight / 2;
-
-    // Centering offsets
-    nameOffset.x = viewportCenterX - (nameRect.left + nameRect.width / 2);
-    nameOffset.y = viewportCenterY - (nameRect.top + nameRect.height / 2);
-
-    roleOffset.x = viewportCenterX - (roleRect.left + roleRect.width / 2);
-    roleOffset.y = viewportCenterY - (roleRect.top + roleRect.height / 2);
-
-    // Restore active states
-    nameEl.style.transform = namePrev;
-    roleEl.style.transform = rolePrev;
-    reveal.style.transform = revealPrev;
-    reveal.style.opacity   = revealOpacityPrev;
-    reveal.style.visibility = revealVisibilityPrev;
-
-    // Cache track and viewport measurements
-    trackHeight = track.offsetHeight;
-    viewportHeight = window.innerHeight;
-  };
-
-  let ticking = false;
-  let currentProgress = 0;
-  let targetProgress  = 0;
-
-  const showWrapper = () => { if (wrapper) wrapper.style.display = ''; };
-
-  const update = () => {
-    // Smooth progress toward target using high-performance lerp
-    const diff = targetProgress - currentProgress;
-    if (Math.abs(diff) < 0.0001) {
-      currentProgress = targetProgress;
-      ticking = false;
-    } else {
-      currentProgress += diff * 0.22; // highly responsive, jitter-filtering lerp
-      requestAnimationFrame(update);
-    }
-
-    const progress = currentProgress;
-    showWrapper();
-
-    // 1. Name Animation: Fades out and slides up gently in range [0.0, 0.30]
-    const t_name = easeInOut(clamp((progress - 0.0) / 0.30, 0, 1));
-    const tx_name = nameOffset.x;
-    const ty_name = nameOffset.y - 40 * t_name;
-    nameEl.style.opacity = 1 - t_name;
-    nameEl.style.transform = `translate3d(${tx_name}px, ${ty_name}px, 0) scale(1.15)`;
-
-    // 2. Role Animation: Fades/rises in range [0.10, 0.40], then docks in range [0.45, 0.85]
-    const t_role_in = easeInOut(clamp((progress - 0.10) / 0.30, 0, 1));
-    let tx_role, ty_role, scale_role;
-
-    if (progress < 0.45) {
-      tx_role = roleOffset.x;
-      ty_role = roleOffset.y + 40 * (1 - t_role_in);
-      scale_role = 1.15;
-    } else {
-      const t_dock = easeInOut(clamp((progress - 0.45) / 0.40, 0, 1));
-      tx_role = roleOffset.x * (1 - t_dock);
-      ty_role = roleOffset.y * (1 - t_dock);
-      scale_role = parseFloat(lerp(1.15, 1.0, t_dock).toFixed(3));
-    }
-
-    roleEl.style.opacity = t_role_in;
-    roleEl.style.transform = `translate3d(${tx_role}px, ${ty_role}px, 0) scale(${scale_role})`;
-
-    // 3. Brief Animation: Fades in and slides up in range [0.55, 0.90]
-    const t_reveal = easeInOut(clamp((progress - 0.55) / 0.35, 0, 1));
-    const ty_reveal = 28 * (1 - t_reveal);
-    reveal.style.opacity = t_reveal;
-    reveal.style.transform = `translate3d(0, ${ty_reveal}px, 0)`;
-    reveal.style.pointerEvents = t_reveal > 0.15 ? 'auto' : 'none';
-    reveal.style.visibility = t_reveal > 0 ? 'visible' : 'hidden';
-
-    // 4. Auxiliary Stages & Header triggers
-    if (progress > 0.55) {
-      hero.classList.add('stage-3');
-      document.documentElement.classList.add('header-visible');
-    } else {
-      hero.classList.remove('stage-3');
-      document.documentElement.classList.remove('header-visible');
-    }
-  };
-
-  const triggerUpdate = () => {
-    const scrollable = trackHeight - viewportHeight;
-    targetProgress = scrollable > 0 ? clamp(window.scrollY / scrollable, 0, 1) : 0;
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(update);
-    }
-  };
-
-  window.addEventListener('scroll', triggerUpdate, { passive: true });
-
-  window.addEventListener('resize', () => {
-    calculateOffsets();
-    triggerUpdate();
-  });
-
-  // Load and deep link handler
-  const handleDeepLinkAndInit = () => {
-    calculateOffsets();
-    
-    // Force progress to apply synchronously for the first render to avoid layout snap
-    const scrollable = trackHeight - viewportHeight;
-    targetProgress = scrollable > 0 ? clamp(window.scrollY / scrollable, 0, 1) : 0;
-    currentProgress = targetProgress;
-    update();
-    
-    document.documentElement.classList.add('timeline-initialized');
-
-    // If a hash exists in URL, scroll to it smoothly after initialization
-    if (window.location.hash) {
-      const target = document.querySelector(window.location.hash);
-      if (target) {
-        setTimeout(() => {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }, 150);
-      }
-    }
-  };
-
-  window.addEventListener('load', handleDeepLinkAndInit);
-
-  if (document.fonts) {
-    document.fonts.ready.then(() => {
-      calculateOffsets();
-      triggerUpdate();
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", nextTheme);
+      localStorage.setItem("portfolio-theme", nextTheme);
+      canvasColors = getCanvasColors();
     });
   }
 
-  // Run initial sync
-  calculateOffsets();
-  const initScrollable = trackHeight - viewportHeight;
-  targetProgress = initScrollable > 0 ? clamp(window.scrollY / initScrollable, 0, 1) : 0;
-  currentProgress = targetProgress;
-  update();
-  document.documentElement.classList.add('timeline-initialized');
-};
-runCinematicTimeline();
+  // --- MOBILE NAVIGATION BAR ---
+  const menuToggle = document.querySelector(".menu-toggle");
+  const siteHeader = document.querySelector(".site-header");
+  const navLinks   = document.querySelectorAll(".nav-links a");
 
-// 5. SECTIONS REVEAL OBSERVER — staggered child animation
-const revealElements = document.querySelectorAll(".scroll-reveal");
-if (revealElements.length > 0) {
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        el.classList.add("reveal-active");
-        // Stagger direct card children for a cascade effect
-        el.querySelectorAll('.glass-card, .quote-card').forEach((card, i) => {
-          card.style.transitionDelay = `${i * 80}ms`;
-        });
-        obs.unobserve(el);
+  if (menuToggle && siteHeader) {
+    menuToggle.addEventListener("click", () => {
+      const isOpen = siteHeader.classList.toggle("menu-is-open");
+      menuToggle.setAttribute("aria-expanded", isOpen);
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        siteHeader.classList.remove("menu-is-open");
+        menuToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!siteHeader.contains(e.target) && siteHeader.classList.contains("menu-is-open")) {
+        siteHeader.classList.remove("menu-is-open");
+        menuToggle.setAttribute("aria-expanded", "false");
       }
     });
-  }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+  }
 
-  document.documentElement.classList.add("js-enabled");
-  revealElements.forEach(el => obs.observe(el));
-}
+  // --- HARDWARE-ACCELERATED CURSOR SPOTLIGHT ---
+  let clientX = -9999;
+  let clientY = -9999;
+  let mouseX = -9999;
+  let mouseY = -9999;
+  let currentX = -9999;
+  let currentY = -9999;
+  let isMoving = false;
+
+  const updateSpotlight = () => {
+    if (currentX === -9999) {
+      currentX = mouseX;
+      currentY = mouseY;
+    } else {
+      currentX += (mouseX - currentX) * 0.15;
+      currentY += (mouseY - currentY) * 0.15;
+    }
+
+    document.documentElement.style.setProperty("--mouse-x", `${currentX}px`);
+    document.documentElement.style.setProperty("--mouse-y", `${currentY}px`);
+
+    if (Math.abs(currentX - mouseX) > 0.2 || Math.abs(currentY - mouseY) > 0.2) {
+      requestAnimationFrame(updateSpotlight);
+    } else {
+      isMoving = false;
+    }
+  };
+
+  window.addEventListener("pointermove", (e) => {
+    clientX = e.clientX;
+    clientY = e.clientY;
+    mouseX = clientX + window.scrollX;
+    mouseY = clientY + window.scrollY;
+
+    if (!isMoving) {
+      isMoving = true;
+      requestAnimationFrame(updateSpotlight);
+    }
+  });
+
+  window.addEventListener("scroll", () => {
+    if (clientX !== -9999) {
+      mouseX = clientX + window.scrollX;
+      mouseY = clientY + window.scrollY;
+      
+      if (!isMoving) {
+        isMoving = true;
+        requestAnimationFrame(updateSpotlight);
+      }
+    }
+  }, { passive: true });
+
+  document.addEventListener("pointerleave", () => {
+    mouseX = -9999;
+    mouseY = -9999;
+  });
+
+  // --- RESPONSIVE SCROLL-DRIVEN TRANSITIONS ---
+  const nameEl = document.querySelector("#headline-name");
+  const roleEl = document.querySelector("#headline-role");
+  const revealEl = document.querySelector(".hero-reveal-block");
+  const heroTrack = document.querySelector("#hero-track");
+  
+  let nameOffset = { x: 0, y: 0 };
+  let roleOffset = { x: 0, y: 0 };
+
+  const calculateOffsets = () => {
+    if (!nameEl || !roleEl) return;
+    
+    // Reset transforms to get natural coordinate bounds
+    nameEl.style.transform = "none";
+    roleEl.style.transform = "none";
+    
+    const heroEl = document.querySelector("#hero");
+    if (!heroEl) return;
+
+    // Viewport coordinates of hero and titles
+    const nameRect = nameEl.getBoundingClientRect();
+    const roleRect = roleEl.getBoundingClientRect();
+    const heroRect = heroEl.getBoundingClientRect();
+
+    // Center coordinates of the hero container
+    const heroCenterX = heroRect.left + heroRect.width / 2;
+    const heroCenterY = heroRect.top + heroRect.height / 2;
+
+    // Center coordinates of the text elements (when transform is none)
+    const nameCenterX = nameRect.left + nameRect.width / 2;
+    const nameCenterY = nameRect.top + nameRect.height / 2;
+
+    const roleCenterX = roleRect.left + roleRect.width / 2;
+    const roleCenterY = roleRect.top + roleRect.height / 2;
+
+    // Translation required to align text centers with hero center
+    nameOffset.x = heroCenterX - nameCenterX;
+    nameOffset.y = heroCenterY - nameCenterY;
+
+    roleOffset.x = heroCenterX - roleCenterX;
+    roleOffset.y = heroCenterY - roleCenterY;
+
+    updateScrollTransitions();
+  };
+
+  const updateScrollTransitions = () => {
+    if (!heroTrack || !nameEl || !roleEl) return;
+    
+    const trackHeight = heroTrack.offsetHeight;
+    const scrollRange = trackHeight - window.innerHeight;
+    if (scrollRange <= 0) return;
+
+    const p = Math.max(0, Math.min(1, window.scrollY / scrollRange));
+
+    // Phase 1 (0 -> 0.3): Name centered and fades out
+    const pName = Math.max(0, Math.min(1, p / 0.3));
+    const nameOpacity = 1 - pName;
+    const nameScale = 1.15 - pName * 0.15;
+    nameEl.style.opacity = nameOpacity;
+    nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(${nameScale})`;
+    nameEl.style.pointerEvents = nameOpacity > 0.15 ? "auto" : "none";
+
+    // Phase 2 (0.1 -> 0.4) & 3 (0.45 -> 0.85): Role fades in centered, then docks
+    const pRoleIn = Math.max(0, Math.min(1, (p - 0.1) / 0.3));
+    const roleOpacity = pRoleIn;
+    
+    let rx, ry, rs;
+    if (p < 0.45) {
+      rx = roleOffset.x;
+      ry = roleOffset.y;
+      rs = 1.15;
+    } else {
+      const pDock = Math.max(0, Math.min(1, (p - 0.45) / 0.4));
+      rx = roleOffset.x * (1 - pDock);
+      ry = roleOffset.y * (1 - pDock);
+      rs = 1.15 - pDock * 0.15;
+    }
+    roleEl.style.opacity = roleOpacity;
+    roleEl.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${rs})`;
+
+    // Phase 4 (0.55 -> 0.9): Bio details fade in
+    if (revealEl) {
+      const pReveal = Math.max(0, Math.min(1, (p - 0.55) / 0.35));
+      revealEl.style.opacity = pReveal;
+      revealEl.style.transform = `translate3d(0, ${20 * (1 - pReveal)}px, 0)`;
+      revealEl.style.pointerEvents = pReveal > 0.15 ? "auto" : "none";
+    }
+
+    // Toggle Sticky Header visibility
+    if (p > 0.55) {
+      document.documentElement.classList.add("header-visible");
+    } else {
+      document.documentElement.classList.remove("header-visible");
+    }
+  };
+
+  let scrollTicking = false;
+  window.addEventListener("scroll", () => {
+    if (!scrollTicking) {
+      scrollTicking = true;
+      requestAnimationFrame(() => {
+        updateScrollTransitions();
+        scrollTicking = false;
+      });
+    }
+  }, { passive: true });
+
+  window.addEventListener("resize", () => {
+    calculateOffsets();
+  });
+
+  // Calculate layout offsets after fonts and stylesheets load to guarantee pixel-perfect centering
+  if (document.fonts) {
+    document.fonts.ready.then(calculateOffsets);
+  }
+  window.addEventListener("load", calculateOffsets);
+  calculateOffsets();
+
+  // --- OPTIMIZED ANTIGRAVITY CONSTELLATION ENGINE ---
+  const canvas = document.querySelector("#antigravity-canvas");
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    const pointer = { active: false, x: 0, y: 0, tx: 0, ty: 0 };
+    const particles = [];
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    let lastScrollY = window.scrollY;
+    let targetVelocity = 0;
+    let smoothedVelocity = 0;
+    let canvasActive = true;
+
+    const resizeCanvas = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      
+      particles.length = 0;
+      // Drastically reduced counts to save CPU/GPU fillrate
+      const total = width < 860 ? 15 : 30;
+      
+      for (let i = 0; i < total; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+          size: 5.5
+        });
+      }
+    };
+
+    const draw = () => {
+      // Loop halts completely if the Canvas element scrolls out of view
+      if (!canvasActive) return;
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Track scroll speed momentum drift
+      const currentScrollY = window.scrollY;
+      const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+      lastScrollY = currentScrollY;
+
+      targetVelocity = Math.min(scrollDelta, 100);
+      smoothedVelocity += (targetVelocity - smoothedVelocity) * 0.08;
+
+      // Soft spring follow effect for pointer coordinates
+      if (pointer.active) {
+        pointer.x += (pointer.tx - pointer.x) * 0.08;
+        pointer.y += (pointer.ty - pointer.y) * 0.08;
+      }
+
+      ctx.lineWidth = 1.4;
+      ctx.strokeStyle = canvasColors.line;
+
+      // Update positions
+      particles.forEach(p => {
+        const speedMult = 1 + smoothedVelocity * 0.05;
+        const driftY = -smoothedVelocity * 0.18; // upward flow
+
+        p.x += p.vx * speedMult;
+        p.y += p.vy * speedMult + driftY;
+
+        // Bounce horizontal bounds
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+
+        // Wrap vertical bounds
+        if (p.y < 0) {
+          p.y = height;
+          p.x = Math.random() * width;
+        } else if (p.y > height) {
+          p.y = 0;
+          p.x = Math.random() * width;
+        }
+
+        // Mouse repulsion
+        if (pointer.active) {
+          const dx = pointer.x - p.x;
+          const dy = pointer.y - p.y;
+          const d = Math.hypot(dx, dy);
+          if (d < 160) {
+            p.x -= (dx / d) * 0.8;
+            p.y -= (dy / d) * 0.8;
+          }
+        }
+      });
+
+      // Draw lines between nearby particles
+      const pCount = particles.length;
+      for (let i = 0; i < pCount; i++) {
+        for (let j = i + 1; j < pCount; j++) {
+          const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+          if (dist < 120) {
+            ctx.globalAlpha = 1 - dist / 120;
+            ctx.beginPath();
+            ctx.moveTo(Math.round(particles[i].x), Math.round(particles[i].y));
+            ctx.lineTo(Math.round(particles[j].x), Math.round(particles[j].y));
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1.0;
+
+      // Draw particle circles
+      particles.forEach(p => {
+        const dx = pointer.x - p.x;
+        const dy = pointer.y - p.y;
+        const d = Math.hypot(dx, dy);
+        const near = pointer.active && d < 160;
+        const sizeMult = near ? 1 + 0.5 * (1 - d / 160) : 1;
+
+        ctx.beginPath();
+        ctx.arc(Math.round(p.x), Math.round(p.y), p.size * sizeMult, 0, Math.PI * 2);
+        ctx.fillStyle = near ? canvasColors.nodeHover : canvasColors.nodeRest;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(draw);
+    };
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+    });
+
+    window.addEventListener("pointermove", (e) => {
+      pointer.active = true;
+      pointer.tx = e.clientX;
+      pointer.ty = e.clientY;
+    });
+
+    document.addEventListener("pointerleave", () => {
+      pointer.active = false;
+    });
+
+    // IntersectionObserver to pause the canvas draw loop when scrolled away
+    const canvasObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const wasActive = canvasActive;
+        canvasActive = entry.isIntersecting;
+        if (canvasActive && !wasActive) {
+          requestAnimationFrame(draw); // resume loop
+        }
+      });
+    }, { threshold: 0.01 });
+
+    canvasObserver.observe(document.querySelector("#hero"));
+    
+    resizeCanvas();
+    draw();
+  }
+
+  // --- INTERSECTION OBSERVER FOR OTHER SCROLL REVEALS ---
+  const revealElements = document.querySelectorAll(".scroll-reveal");
+  if (revealElements.length > 0) {
+    const observerOptions = {
+      threshold: 0.05,
+      rootMargin: "0px 0px -60px 0px"
+    };
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-active");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    revealElements.forEach(el => revealObserver.observe(el));
+  }
+});
