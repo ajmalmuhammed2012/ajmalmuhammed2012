@@ -28,10 +28,10 @@
   --glass: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(0, 0, 0, 0.06);
   --glass-specular: rgba(255, 255, 255, 0.8);
-  --accent: #14a596;              
-  --accent-glow: rgba(20, 165, 150, 0.2);
-  --accent-hover: #e65500;         
-  --accent-hover-glow: rgba(230, 85, 0, 0.3);
+  --accent: #0f7a6f;               /* Pine/Teal for >= 4.5:1 contrast on light backgrounds */
+  --accent-glow: rgba(15, 122, 111, 0.2);
+  --accent-hover: #b84400;          /* Darker orange for >= 4.5:1 contrast on white text hover */
+  --accent-hover-glow: rgba(184, 68, 0, 0.3);
   --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.02);
   --radius-apple: 24px;            
   --canvas-opacity: 0.55;
@@ -45,6 +45,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 72px; /* Prevent fixed header from obscuring top of sections */
 }
 
 /* Page-load fade: hero title slides up gracefully on first visit */
@@ -261,6 +262,9 @@ a {
 }
 
 /* Stable centering stack for absolute mobile alignment symmetry, left-aligned on desktop */
+.js-enabled:not(.timeline-initialized) .cinematic-headline-wrapper {
+  opacity: 0;
+}
 .cinematic-headline-wrapper {
   display: grid;
   grid-template-columns: 1fr;
@@ -269,6 +273,7 @@ a {
   width: 100%;
   min-height: 140px;
   pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 .hero-title {
@@ -326,7 +331,7 @@ a {
   box-shadow: 0 4px 16px var(--accent-glow);
 }
 .button.primary:hover {
-  background: var(--accent-hover); border-color: var(--accent-hover); color: #fff;
+  background: var(--accent-hover); border-color: var(--accent-hover); color: var(--bg); /* High-contrast text on bright hover bg */
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 8px 28px var(--accent-hover-glow);
 }
@@ -492,7 +497,7 @@ a {
   border: 1px solid var(--glass-border); border-radius: var(--radius-apple); font-size: 0.85rem; font-weight: 600;
   text-transform: uppercase; letter-spacing: 0.08em; transition: all 0.3s ease;
 }
-.contact-grid a:hover { background: var(--accent-hover); color: #fff; }
+.contact-grid a:hover { background: var(--accent-hover); color: var(--bg); } /* High-contrast text on hover */
 
 .site-footer { display: flex; justify-content: center; padding: 48px 24px; font-size: 0.75rem; color: var(--muted); border-top: 1px solid var(--line); }
 
@@ -542,6 +547,7 @@ a {
   .contact-grid { grid-template-columns: 1fr; }
   .role-header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .role-header .date { align-self: flex-start; margin-top: 4px; }
+  .hero-scroll-track { height: 320vh; } /* Reduced scroll weight on mobile */
 
   /* --- MOBILE SYSTEM DESIGNS --- */
   .hero {
@@ -582,4 +588,13 @@ a {
   .hero-meta { grid-template-columns: 1fr; gap: 12px; text-align: center; }
   .hero-actions-row { flex-direction: column; align-items: center; }
   .hero-actions-row .button { width: 100%; max-width: 280px; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .role-card {
+    padding: 20px 16px; /* Free up spacing on narrow mobile devices */
+  }
+  .stats-grid article, .ai-grid article, .skills-grid article, .quote-card, .education-block, .cert-block {
+    padding: 20px;
+  }
 }

@@ -1,17 +1,24 @@
-// 1. SCROLL RESTORATION BASELINES
+// 1. SCROLL RESTORATION BASELINES (Only force to top if no deep-link hash exists)
 if (window.history && history.scrollRestoration) {
   history.scrollRestoration = 'manual';
 }
-window.scrollTo(0, 0);
+if (!window.location.hash) {
+  window.scrollTo(0, 0);
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const year = document.querySelector("#year");
   if (year) year.textContent = new Date().getFullYear();
 });
 
-// 2. THEME MATRIX SYSTEM CONFIGS
+// 2. THEME MATRIX SYSTEM CONFIGS (With Local Storage Persistence)
 const themeToggle = document.querySelector("#theme-toggle");
 const rootElement = document.documentElement;
+
+// Load theme preference early to prevent theme flash
+const savedTheme = localStorage.getItem("portfolio-theme") || 
+  (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+rootElement.setAttribute("data-theme", savedTheme);
 
 const getCanvasColors = () => {
   const isDarkMode = rootElement.getAttribute("data-theme") === "dark";
@@ -26,7 +33,9 @@ let canvasColors = getCanvasColors();
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
     const currentTheme = rootElement.getAttribute("data-theme");
-    rootElement.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+    rootElement.setAttribute("data-theme", nextTheme);
+    localStorage.setItem("portfolio-theme", nextTheme);
     canvasColors = getCanvasColors();
   });
 }
@@ -130,8 +139,10 @@ if (canvas) {
         const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
         if (dist < 120) {
           ctx.globalAlpha = 1 - dist / 120;
-          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
+          ctx.beginPath(); 
+          ctx.moveTo(Math.round(particles[i].x), Math.round(particles[i].y));
+          ctx.lineTo(Math.round(particles[j].x), Math.round(particles[j].y)); 
+          ctx.stroke();
         }
       }
     }
@@ -144,7 +155,8 @@ if (canvas) {
       const near = pointer.active && d < 180;
       // Smooth size using distance ratio rather than binary
       const sizeMult = near ? 1 + 0.5 * (1 - d / 180) : 1;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.size * sizeMult, 0, Math.PI * 2);
+      ctx.beginPath(); 
+      ctx.arc(Math.round(p.x), Math.round(p.y), p.size * sizeMult, 0, Math.PI * 2);
       ctx.fillStyle = near ? canvasColors.nodeHover : canvasColors.nodeRest;
       ctx.fill();
     });
@@ -195,6 +207,10 @@ const runCinematicTimeline = () => {
   const nameOffset = { x: 0, y: 0 };
   const roleOffset = { x: 0, y: 0 };
 
+  // Cache track height and viewport height to avoid layout thrashing in scroll loop
+  let trackHeight = 0;
+  let viewportHeight = 0;
+
   const calculateOffsets = () => {
     // Clear styles temporarily to get clean, un-transformed bounding boxes
     const namePrev = nameEl.style.transform;
@@ -230,6 +246,10 @@ const runCinematicTimeline = () => {
     reveal.style.transform = revealPrev;
     reveal.style.opacity   = revealOpacityPrev;
     reveal.style.visibility = revealVisibilityPrev;
+
+    // Cache track and viewport measurements
+    trackHeight = track.offsetHeight;
+    viewportHeight = window.innerHeight;
   };
 
   let ticking = false;
@@ -254,8 +274,8 @@ const runCinematicTimeline = () => {
 
     // 1. Name Animation: Fades out and slides up gently in range [0.0, 0.30]
     const t_name = easeInOut(clamp((progress - 0.0) / 0.30, 0, 1));
-    const tx_name = Math.round(nameOffset.x);
-    const ty_name = Math.round(nameOffset.y - 40 * t_name);
+    const tx_name = nameOffset.x;
+    const ty_name = nameOffset.y - 40 * t_name;
     nameEl.style.opacity = 1 - t_name;
     nameEl.style.transform = `translate3d(${tx_name}px, ${ty_name}px, 0) scale(1.15)`;
 
@@ -264,13 +284,13 @@ const runCinematicTimeline = () => {
     let tx_role, ty_role, scale_role;
 
     if (progress < 0.45) {
-      tx_role = Math.round(roleOffset.x);
-      ty_role = Math.round(roleOffset.y + 40 * (1 - t_role_in));
+      tx_role = roleOffset.x;
+      ty_role = roleOffset.y + 40 * (1 - t_role_in);
       scale_role = 1.15;
     } else {
       const t_dock = easeInOut(clamp((progress - 0.45) / 0.40, 0, 1));
-      tx_role = Math.round(roleOffset.x * (1 - t_dock));
-      ty_role = Math.round(roleOffset.y * (1 - t_dock));
+      tx_role = roleOffset.x * (1 - t_dock);
+      ty_role = roleOffset.y * (1 - t_dock);
       scale_role = parseFloat(lerp(1.15, 1.0, t_dock).toFixed(3));
     }
 
@@ -279,7 +299,7 @@ const runCinematicTimeline = () => {
 
     // 3. Brief Animation: Fades in and slides up in range [0.55, 0.90]
     const t_reveal = easeInOut(clamp((progress - 0.55) / 0.35, 0, 1));
-    const ty_reveal = Math.round(28 * (1 - t_reveal));
+    const ty_reveal = 28 * (1 - t_reveal);
     reveal.style.opacity = t_reveal;
     reveal.style.transform = `translate3d(0, ${ty_reveal}px, 0)`;
     reveal.style.pointerEvents = t_reveal > 0.15 ? 'auto' : 'none';
@@ -296,8 +316,8 @@ const runCinematicTimeline = () => {
   };
 
   const triggerUpdate = () => {
-    const scrollable = track.offsetHeight - window.innerHeight;
-    targetProgress = scrollable > 0 ? clamp(-track.getBoundingClientRect().top / scrollable, 0, 1) : 0;
+    const scrollable = trackHeight - viewportHeight;
+    targetProgress = scrollable > 0 ? clamp(window.scrollY / scrollable, 0, 1) : 0;
     if (!ticking) {
       ticking = true;
       requestAnimationFrame(update);
@@ -311,10 +331,30 @@ const runCinematicTimeline = () => {
     triggerUpdate();
   });
 
-  window.addEventListener('load', () => {
+  // Load and deep link handler
+  const handleDeepLinkAndInit = () => {
     calculateOffsets();
-    triggerUpdate();
-  });
+    
+    // Force progress to apply synchronously for the first render to avoid layout snap
+    const scrollable = trackHeight - viewportHeight;
+    targetProgress = scrollable > 0 ? clamp(window.scrollY / scrollable, 0, 1) : 0;
+    currentProgress = targetProgress;
+    update();
+    
+    document.documentElement.classList.add('timeline-initialized');
+
+    // If a hash exists in URL, scroll to it smoothly after initialization
+    if (window.location.hash) {
+      const target = document.querySelector(window.location.hash);
+      if (target) {
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      }
+    }
+  };
+
+  window.addEventListener('load', handleDeepLinkAndInit);
 
   if (document.fonts) {
     document.fonts.ready.then(() => {
@@ -323,9 +363,13 @@ const runCinematicTimeline = () => {
     });
   }
 
-  // Run initial pass
+  // Run initial sync
   calculateOffsets();
-  triggerUpdate();
+  const initScrollable = trackHeight - viewportHeight;
+  targetProgress = initScrollable > 0 ? clamp(window.scrollY / initScrollable, 0, 1) : 0;
+  currentProgress = targetProgress;
+  update();
+  document.documentElement.classList.add('timeline-initialized');
 };
 runCinematicTimeline();
 
