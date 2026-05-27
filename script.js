@@ -173,12 +173,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const p = Math.max(0, Math.min(1, window.scrollY / scrollRange));
 
+    const isMobile = window.innerWidth < 860;
+
     // Phase 1 (0 -> 0.3): Name centered and fades out
     const pName = Math.max(0, Math.min(1, p / 0.3));
     const nameOpacity = 1 - pName;
     const nameScale = 1.15 - pName * 0.15;
     nameEl.style.opacity = nameOpacity;
-    nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(${nameScale})`;
+    
+    if (isMobile) {
+      nameEl.style.transform = `translate3d(0, ${nameOffset.y}px, 0) scale(${nameScale})`;
+    } else {
+      nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(${nameScale})`;
+    }
     nameEl.style.pointerEvents = nameOpacity > 0.15 ? "auto" : "none";
 
     // Phase 2 (0.1 -> 0.4) & 3 (0.45 -> 0.85): Role fades in centered, then docks
@@ -186,15 +193,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const roleOpacity = pRoleIn;
     
     let rx, ry, rs;
-    if (p < 0.45) {
-      rx = roleOffset.x;
+    if (isMobile) {
+      rx = 0;
       ry = roleOffset.y;
-      rs = 1.15;
+      rs = 1.15 - pRoleIn * 0.15;
     } else {
-      const pDock = Math.max(0, Math.min(1, (p - 0.45) / 0.4));
-      rx = roleOffset.x * (1 - pDock);
-      ry = roleOffset.y * (1 - pDock);
-      rs = 1.15 - pDock * 0.15;
+      if (p < 0.45) {
+        rx = roleOffset.x;
+        ry = roleOffset.y;
+        rs = 1.15;
+      } else {
+        const pDock = Math.max(0, Math.min(1, (p - 0.45) / 0.4));
+        rx = roleOffset.x * (1 - pDock);
+        ry = roleOffset.y * (1 - pDock);
+        rs = 1.15 - pDock * 0.15;
+      }
     }
     roleEl.style.opacity = roleOpacity;
     roleEl.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${rs})`;
