@@ -1,14 +1,3 @@
-// --- THEME MANAGEMENT SYSTEM ---
-// Initialize theme early to avoid style flash
-const getInitialTheme = () => {
-  const savedTheme = localStorage.getItem("portfolio-theme");
-  if (savedTheme) return savedTheme;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-};
-
-const initialTheme = getInitialTheme();
-document.documentElement.setAttribute("data-theme", initialTheme);
-
 document.addEventListener("DOMContentLoaded", () => {
   // --- SET CURRENT COPYRIGHT YEAR ---
   const yearEl = document.querySelector("#year");
@@ -16,30 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
     yearEl.textContent = new Date().getFullYear();
   }
 
-  // --- THEME TOGGLER LOGIC ---
-  const themeToggle = document.querySelector("#theme-toggle");
-  let canvasColors = { nodeRest: "", nodeHover: "", line: "" };
-  
-  const getCanvasColors = () => {
-    const isDarkMode = document.documentElement.getAttribute("data-theme") === "dark";
-    return {
-      nodeRest:  isDarkMode ? "rgba(45, 226, 206, 0.95)"  : "rgba(15, 118, 110, 0.85)",
-      nodeHover: isDarkMode ? "rgba(255, 110, 0, 1)"       : "rgba(184, 68, 0, 1)",
-      line:      isDarkMode ? "rgba(45, 226, 206, 0.45)"   : "rgba(15, 118, 110, 0.35)"
-    };
+  // --- ANTIGRAVITY CANVAS COLORS ---
+  const canvasColors = {
+    nodeRest: "rgba(15, 118, 110, 0.85)",
+    nodeHover: "rgba(184, 68, 0, 1)",
+    line: "rgba(15, 118, 110, 0.35)"
   };
-
-  canvasColors = getCanvasColors();
-
-  if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-      const currentTheme = document.documentElement.getAttribute("data-theme");
-      const nextTheme = currentTheme === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", nextTheme);
-      localStorage.setItem("portfolio-theme", nextTheme);
-      canvasColors = getCanvasColors();
-    });
-  }
 
   // --- MOBILE NAVIGATION BAR ---
   const menuToggle = document.querySelector(".menu-toggle");
