@@ -150,33 +150,28 @@ const runCinematicTimeline = () => {
 
   if (!track || !hero || !nameEl || !roleEl || !reveal) return;
 
-  // Three easing functions for different motion characters:
-  const easeOut    = t => 1 - Math.pow(1 - t, 3);          // fast start, slow end
-  const easeInOut  = t => t < 0.5                           // symmetric, cinematic
+  // Easing functions
+  const easeOut   = t => 1 - Math.pow(1 - t, 3);  // immediate start, decelerates in
+  const easeInOut = t => t < 0.5                   // symmetric — used for Phase 4 only
     ? 4 * t * t * t
     : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  const clamp      = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  const lerp       = (a, b, t)   => a + (b - a) * t;
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const lerp  = (a, b, t)   => a + (b - a) * t;
 
   // Phase boundaries — synced with 680vh track in styles.css
   const P1   = 0.20;
   const P2   = 0.40;
   const HOLD = 0.60;
 
-  // Smooth scroll progress — lerps display progress toward raw target each frame.
-  // This eliminates the micro-jitter from wheel events firing in discrete steps.
-  let displayProgress = 0;
-  let rafId = null;
   let ticking = false;
 
   const showWrapper = () => { if (wrapper) wrapper.style.display = ''; };
 
   const update = () => {
+    // Use raw scroll progress directly — no lerp.
+    // Lerp was causing 300ms+ lag that made Phase 2 feel choppy/stuttery.
     const scrollable = track.offsetHeight - window.innerHeight;
-    const raw        = clamp(-track.getBoundingClientRect().top / scrollable, 0, 1);
-    // Lerp toward raw — higher factor = more responsive, lower = smoother lag
-    displayProgress += (raw - displayProgress) * 0.12;
-    const progress = displayProgress;
+    const progress   = clamp(-track.getBoundingClientRect().top / scrollable, 0, 1);
 
     if (progress < P1) {
       // ── PHASE 1: Name held, centered ─────────────────────────────────
@@ -192,8 +187,8 @@ const runCinematicTimeline = () => {
       document.documentElement.classList.remove('header-visible');
 
     } else if (progress < P2) {
-      // ── PHASE 2: Cross-dissolve name → Software Engineer (easeInOut) ──
-      const t = easeInOut((progress - P1) / (P2 - P1));
+      // ── PHASE 2: Cross-dissolve name → Software Engineer (easeOut — starts immediately) ─
+      const t = easeOut((progress - P1) / (P2 - P1));
       showWrapper();
       nameEl.style.display   = '';
       nameEl.style.opacity   = 1 - t;
@@ -234,19 +229,13 @@ const runCinematicTimeline = () => {
       if (t > 0.3) document.documentElement.classList.add('header-visible');
     }
 
-    // Keep running rAF while we haven't fully settled (progress near raw target)
-    if (Math.abs(raw - displayProgress) > 0.0005) {
-      rafId = requestAnimationFrame(update);
-    } else {
-      ticking = false;
-      rafId = null;
-    }
+    ticking = false;
   };
 
   window.addEventListener('scroll', () => {
     if (!ticking) {
       ticking = true;
-      rafId = requestAnimationFrame(update);
+      requestAnimationFrame(update);
     }
   }, { passive: true });
 

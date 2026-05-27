@@ -203,10 +203,11 @@ a {
   width: 100%;
   max-width: 1024px;
   padding: 0 24px;
-  /* GPU layer for smooth transform during scroll */
+  /* GPU layer + page-load entrance (JS only controls children, not this container) */
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  animation: heroEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
 /* Rebuilt centering stack for absolute mobile alignment symmetry */
@@ -233,10 +234,8 @@ a {
   -webkit-backface-visibility: hidden;
 }
 
-/* First page-load: name slides up (animation runs once, then JS takes over) */
-#headline-name {
-  animation: heroEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
-}
+/* First-load entrance is on .hero-content (above), not the title.
+   JS sets nameEl inline opacity immediately which would fight a CSS animation here. */
 
 .hidden-role {
   opacity: 0;
