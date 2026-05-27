@@ -11,6 +11,11 @@ document.documentElement.setAttribute("data-theme", initialTheme);
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.querySelector("#antigravity-canvas");
+  const isLowEnd = (navigator.deviceMemory && navigator.deviceMemory <= 4) || 
+                   (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+  if (isLowEnd) {
+    document.documentElement.classList.add("low-end");
+  }
 
   // --- SET CURRENT COPYRIGHT YEAR ---
   const yearEl = document.querySelector("#year");
@@ -225,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Fade constellation background based on scrolling into #profile section
     const profileEl = document.querySelector("#profile");
-    if (profileEl && canvas) {
+    if (profileEl && canvas && !isLowEnd) {
       const profileRect = profileEl.getBoundingClientRect();
       const startFade = window.innerHeight / 2;
       const endFade = 0;
@@ -266,6 +271,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- OPTIMIZED ANTIGRAVITY CONSTELLATION ENGINE ---
   if (canvas) {
+    if (isLowEnd) {
+      canvas.style.display = "none";
+      return;
+    }
     const ctx = canvas.getContext("2d");
     const pointer = { active: false, x: 0, y: 0, tx: 0, ty: 0 };
     const particles = [];
@@ -285,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       particles.length = 0;
       // Drastically reduced counts to save CPU/GPU fillrate
-      const total = width < 860 ? 15 : 30;
+      const total = width < 860 ? 8 : 18;
       
       for (let i = 0; i < total; i++) {
         particles.push({
