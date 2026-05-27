@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const getCanvasColors = () => {
     const isDarkMode = document.documentElement.getAttribute("data-theme") === "dark";
     return {
-      nodeRest:  isDarkMode ? "rgba(45, 226, 206, 0.95)"  : "rgba(15, 118, 110, 0.85)",
+      nodeRest:  isDarkMode ? "rgba(45, 226, 206, 0.95)"  : "rgba(15, 118, 110, 0.9)",
       nodeHover: isDarkMode ? "rgba(255, 110, 0, 1)"       : "rgba(184, 68, 0, 1)",
-      line:      isDarkMode ? "rgba(45, 226, 206, 0.45)"   : "rgba(15, 118, 110, 0.35)"
+      line:      isDarkMode ? "rgba(45, 226, 206, 0.75)"   : "rgba(15, 118, 110, 0.65)"
     };
   };
 
@@ -299,7 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pointer.y += (pointer.ty - pointer.y) * 0.08;
       }
 
-      ctx.lineWidth = 1.4;
+      ctx.lineWidth = 2.2;
       ctx.strokeStyle = canvasColors.line;
 
       // Update positions
