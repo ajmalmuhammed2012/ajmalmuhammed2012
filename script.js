@@ -200,23 +200,14 @@ const runCinematicTimeline = () => {
       document.documentElement.classList.remove('header-visible');
 
     } else {
-      // ── PHASE 4: Role fades OUT → bio + CTA fade IN (clean, no heading) ──
-      const t      = easeOut((progress - HOLD) / (1 - HOLD));
-      // Role dissolves out in first 25% of Phase 4
-      const roleT  = clamp(t * 4, 0, 1);
-      const roleFade = 1 - roleT;
-      if (roleFade <= 0.01) {
-        hideWrapper(); // collapse the wrapper once role is invisible
-        roleEl.style.display = 'none';
-      } else {
-        showWrapper();
-        roleEl.style.display   = '';
-        roleEl.style.opacity   = roleFade;
-        roleEl.style.transform = `translateY(${lerp(0, -20, roleT)}px)`;
-      }
-      nameEl.style.opacity = 0;
-      nameEl.style.display = 'none';
-      // Reveal content fades in after a brief overlap window
+      // ── PHASE 4: Software Engineer stays; bio + CTA fade in ────────────
+      const t = easeOut((progress - HOLD) / (1 - HOLD));
+      showWrapper();
+      nameEl.style.opacity   = 0;
+      nameEl.style.display   = 'none';
+      roleEl.style.display   = '';
+      roleEl.style.opacity   = 1;
+      roleEl.style.transform = 'translateY(0)';
       reveal.style.display   = 'block';
       reveal.style.opacity   = clamp((t - 0.10) * 1.8, 0, 1);
       reveal.style.transform = `translateY(${lerp(28, 0, Math.min(t * 1.4, 1))}px)`;

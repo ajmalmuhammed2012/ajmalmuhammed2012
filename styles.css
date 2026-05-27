@@ -382,10 +382,15 @@ a {
     flex-direction: row;
     flex-wrap: wrap;
   }
-  /* Hide the meta row on mobile — too tall, pushes content off-screen */
+  /* Compact meta grid on mobile — all 3 items visible in single column */
   .hero.stage-3 .hero-meta {
-    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
   }
+  .hero.stage-3 .meta-item .label { font-size: 0.6rem; }
+  .hero.stage-3 .meta-item .value { font-size: 0.8rem; }
 }
 @media (max-width: 580px) {
   .hero-meta { grid-template-columns: 1fr; gap: 16px; }
