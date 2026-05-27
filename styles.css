@@ -92,12 +92,8 @@ body {
   height: 100vh;
   z-index: -5;
   pointer-events: none;
-  opacity: 0.85;
+  opacity: 1;
   transition: opacity 0.4s ease;
-}
-
-[data-theme="light"] #antigravity-canvas {
-  opacity: 0.45;
 }
 
 .grid-overlay {
