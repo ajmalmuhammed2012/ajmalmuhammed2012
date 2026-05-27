@@ -183,12 +183,11 @@ a {
   height: 100vh;
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding-top: 14vh;
   overflow: hidden;
   z-index: 2;
-  /* Smooth the padding-top shift when stage-3 class is applied */
-  transition: padding-top 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-shade {
@@ -210,32 +209,29 @@ a {
   animation: heroEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
-/* Rebuilt centering stack for absolute mobile alignment symmetry */
+/* Stable centering stack for absolute mobile alignment symmetry, left-aligned on desktop */
 .cinematic-headline-wrapper {
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
-  justify-items: center;
+  justify-items: start;
   width: 100%;
   min-height: 140px;
 }
 
 .hero-title {
   grid-area: 1/1;
-  font-size: clamp(2.6rem, 7.5vw, 5.2rem);
+  font-size: clamp(2.0rem, 6vw, 4.5rem);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.04em;
   margin: 0;
-  text-align: center;
+  text-align: left;
   /* JS drives opacity/transform — GPU layer for smooth compositing */
   will-change: opacity, transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
-
-/* First-load entrance is on .hero-content (above), not the title.
-   JS sets nameEl inline opacity immediately which would fight a CSS animation here. */
 
 .hidden-role {
   opacity: 0;
@@ -248,30 +244,12 @@ a {
   will-change: opacity, transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  /* display controlled by JS */
 }
 
-/* --- STAGE CLASSES: structural/layout only, JS owns opacity/transform --- */
-/* Stage 3 / Phase 4: centered → left-aligned, content-forward layout */
-.hero.stage-3 {
-  align-items: flex-start;
-  padding-top: 14vh;
-}
-.hero.stage-3 .cinematic-headline-wrapper {
-  min-height: auto;
-  justify-items: start;
-}
-.hero.stage-3 #headline-role {
-  font-size: clamp(2.2rem, 6vw, 4.2rem);
-  text-align: left;
-  letter-spacing: -0.035em;
-  transition: font-size 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-/* Full-brightness text in Phase 4 (hero-copy defaults to var(--muted)) */
+/* --- STAGE CLASSES: minor colors/spacings only, no layout shifts --- */
 .hero.stage-3 .hero-copy {
   color: var(--ink);
 }
-/* Tighter meta spacing so it doesn't push below the viewport */
 .hero.stage-3 .hero-meta {
   margin-top: 28px;
 }
@@ -431,42 +409,43 @@ a {
   .contact-grid { grid-template-columns: 1fr; }
   .role-header { flex-direction: column; gap: 6px; }
 
-  /* --- MOBILE STAGE-3 HERO FIX ---
-     On mobile the header is fixed at top:0 / height:48px.
-     We push content down just far enough to clear it, then compact
-     the reveal block so everything fits inside one viewport height.
-  */
-  .hero.stage-3 {
-    padding-top: 62px; /* 48px header + 14px breathing room */
+  /* --- MOBILE SYSTEM DESIGNS --- */
+  .hero {
+    padding-top: 80px; /* 48px header + 32px breathing room */
     align-items: flex-start;
   }
-  .hero.stage-3 #headline-role {
-    font-size: clamp(1.8rem, 7vw, 2.8rem);
+  .cinematic-headline-wrapper {
+    min-height: 100px;
+    justify-items: center;
   }
-  .hero.stage-3 .hero-reveal-block {
+  .hero-title {
+    text-align: center;
+    font-size: clamp(1.8rem, 7vw, 3.2rem);
+  }
+  .hero-reveal-block {
+    margin-top: 24px;
+    text-align: center;
+  }
+  .hero-actions-row {
     margin-top: 20px;
+    justify-content: center;
   }
-  .hero.stage-3 .hero-copy {
+  .hero-copy {
     font-size: 1.05rem;
     line-height: 1.5;
   }
-  .hero.stage-3 .hero-actions-row {
-    margin-top: 20px;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  /* Compact meta grid on mobile — all 3 items visible in single column */
-  .hero.stage-3 .hero-meta {
+  /* Compact meta grid on mobile — all 3 items visible in two columns */
+  .hero-meta {
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 16px;
-    padding-top: 16px;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 20px;
   }
-  .hero.stage-3 .meta-item .label { font-size: 0.6rem; }
-  .hero.stage-3 .meta-item .value { font-size: 0.8rem; }
+  .meta-item .label { font-size: 0.65rem; }
+  .meta-item .value { font-size: 0.85rem; }
 }
 @media (max-width: 580px) {
-  .hero-meta { grid-template-columns: 1fr; gap: 16px; }
-  .hero-actions-row { flex-direction: column; align-items: stretch; }
-  .hero-actions-row .button { width: 100%; text-align: center; }
+  .hero-meta { grid-template-columns: 1fr; gap: 12px; text-align: center; }
+  .hero-actions-row { flex-direction: column; align-items: center; }
+  .hero-actions-row .button { width: 100%; max-width: 280px; text-align: center; }
 }

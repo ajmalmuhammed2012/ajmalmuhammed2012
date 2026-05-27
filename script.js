@@ -136,9 +136,9 @@ if (canvas) {
 // 4. CINEMATIC SCROLL-DRIVEN HERO TIMELINE
 // 4 phases across a 680vh scroll track:
 //   Phase 1 (0→20%):  "Ajmal Muhammed" centered and held
-//   Phase 2 (20→40%): Cross-dissolve → "Software Engineer" (easeInOut)
+//   Phase 2 (20→40%): Cross-dissolve → "Software Engineer" (easeOut)
 //   HOLD   (40→60%):  "Software Engineer" alone, centered — reader breathes
-//   Phase 4 (60→100%): Stage-3 layout, bio + buttons fade in
+//   Phase 4 (60→100%): Dock role to static position, bio + buttons fade in
 const runCinematicTimeline = () => {
   const track       = document.querySelector('.hero-scroll-track');
   const hero        = document.getElementById('timeline-hero');
@@ -151,10 +151,7 @@ const runCinematicTimeline = () => {
   if (!track || !hero || !nameEl || !roleEl || !reveal) return;
 
   // Easing functions
-  const easeOut   = t => 1 - Math.pow(1 - t, 3);  // immediate start, decelerates in
-  const easeInOut = t => t < 0.5                   // symmetric — used for Phase 4 only
-    ? 4 * t * t * t
-    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const easeOut   = t => 1 - Math.pow(1 - t, 3);
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
   const lerp  = (a, b, t)   => a + (b - a) * t;
 
@@ -163,68 +160,124 @@ const runCinematicTimeline = () => {
   const P2   = 0.40;
   const HOLD = 0.60;
 
+  // Visual centering offsets (measured relative to final layout positions)
+  const nameOffset = { x: 0, y: 0 };
+  const roleOffset = { x: 0, y: 0 };
+
+  const calculateOffsets = () => {
+    // Clear styles temporarily to get clean, un-transformed bounding boxes
+    const namePrev = nameEl.style.transform;
+    const rolePrev = roleEl.style.transform;
+    const revealPrev = reveal.style.transform;
+    const revealOpacityPrev = reveal.style.opacity;
+    const revealVisibilityPrev = reveal.style.visibility;
+
+    nameEl.style.transform = 'none';
+    roleEl.style.transform = 'none';
+    reveal.style.transform = 'none';
+    reveal.style.opacity   = '1';
+    reveal.style.visibility = 'visible';
+
+    const nameRect = nameEl.getBoundingClientRect();
+    const roleRect = roleEl.getBoundingClientRect();
+    const viewportCenterX = window.innerWidth / 2;
+    const viewportCenterY = window.innerHeight / 2;
+
+    // Centering offsets
+    nameOffset.x = viewportCenterX - (nameRect.left + nameRect.width / 2);
+    nameOffset.y = viewportCenterY - (nameRect.top + nameRect.height / 2);
+
+    roleOffset.x = viewportCenterX - (roleRect.left + roleRect.width / 2);
+    roleOffset.y = viewportCenterY - (roleRect.top + roleRect.height / 2);
+
+    // Restore active states
+    nameEl.style.transform = namePrev;
+    roleEl.style.transform = rolePrev;
+    reveal.style.transform = revealPrev;
+    reveal.style.opacity   = revealOpacityPrev;
+    reveal.style.visibility = revealVisibilityPrev;
+  };
+
   let ticking = false;
 
   const showWrapper = () => { if (wrapper) wrapper.style.display = ''; };
 
   const update = () => {
-    // Use raw scroll progress directly — no lerp.
-    // Lerp was causing 300ms+ lag that made Phase 2 feel choppy/stuttery.
     const scrollable = track.offsetHeight - window.innerHeight;
     const progress   = clamp(-track.getBoundingClientRect().top / scrollable, 0, 1);
 
     if (progress < P1) {
       // ── PHASE 1: Name held, centered ─────────────────────────────────
       showWrapper();
-      nameEl.style.display   = '';
       nameEl.style.opacity   = 1;
-      nameEl.style.transform = 'translate3d(0,0,0)';
-      roleEl.style.display   = '';
+      nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(1.15)`;
+      
       roleEl.style.opacity   = 0;
-      roleEl.style.transform = 'translate3d(0,32px,0)';
-      reveal.style.display   = 'none';
+      roleEl.style.transform = `translate3d(${roleOffset.x}px, ${roleOffset.y}px, 0) scale(1.15)`;
+      
+      reveal.style.opacity   = 0;
+      reveal.style.transform = 'translate3d(0, 28px, 0)';
+      reveal.style.pointerEvents = 'none';
+      reveal.style.visibility = 'hidden';
+      
       hero.classList.remove('stage-3');
       document.documentElement.classList.remove('header-visible');
 
     } else if (progress < P2) {
-      // ── PHASE 2: Cross-dissolve name → Software Engineer (easeOut — starts immediately) ─
+      // ── PHASE 2: Cross-dissolve name → Software Engineer ─────────────────
       const t = easeOut((progress - P1) / (P2 - P1));
       showWrapper();
-      nameEl.style.display   = '';
       nameEl.style.opacity   = 1 - t;
-      nameEl.style.transform = `translate3d(0,${lerp(0, -28, t)}px,0)`;
-      roleEl.style.display   = '';
+      nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(1.15)`;
+      
       roleEl.style.opacity   = t;
-      roleEl.style.transform = `translate3d(0,${lerp(32, 0, t)}px,0)`;
-      reveal.style.display   = 'none';
+      roleEl.style.transform = `translate3d(${roleOffset.x}px, ${roleOffset.y}px, 0) scale(1.15)`;
+      
+      reveal.style.opacity   = 0;
+      reveal.style.transform = 'translate3d(0, 28px, 0)';
+      reveal.style.pointerEvents = 'none';
+      reveal.style.visibility = 'hidden';
+      
       hero.classList.remove('stage-3');
       document.documentElement.classList.remove('header-visible');
 
     } else if (progress < HOLD) {
-      // ── HOLD: Software Engineer alone, centered — breathe ─────────────
+      // ── HOLD: Software Engineer alone, centered ─────────────────────────
       showWrapper();
       nameEl.style.opacity   = 0;
-      nameEl.style.display   = 'none';
-      roleEl.style.display   = '';
+      nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(1.15)`;
+      
       roleEl.style.opacity   = 1;
-      roleEl.style.transform = 'translate3d(0,0,0)';
-      reveal.style.display   = 'none';
+      roleEl.style.transform = `translate3d(${roleOffset.x}px, ${roleOffset.y}px, 0) scale(1.15)`;
+      
+      reveal.style.opacity   = 0;
+      reveal.style.transform = 'translate3d(0, 28px, 0)';
+      reveal.style.pointerEvents = 'none';
+      reveal.style.visibility = 'hidden';
+      
       hero.classList.remove('stage-3');
       document.documentElement.classList.remove('header-visible');
 
     } else {
-      // ── PHASE 4: Stage-3 layout; Software Engineer stays + bio fades in ─
+      // ── PHASE 4: Transition to final layout + bio fades in ──────────────────
       const t = easeOut((progress - HOLD) / (1 - HOLD));
       showWrapper();
       nameEl.style.opacity   = 0;
-      nameEl.style.display   = 'none';
-      roleEl.style.display   = '';
+      nameEl.style.transform = `translate3d(${nameOffset.x}px, ${nameOffset.y}px, 0) scale(1.15)`;
+      
       roleEl.style.opacity   = 1;
-      roleEl.style.transform = 'translate3d(0,0,0)';
-      reveal.style.display   = 'block';
-      // Bio fades in with a slight initial delay for a staggered feel
-      reveal.style.opacity   = clamp((t - 0.08) * 1.9, 0, 1);
-      reveal.style.transform = `translate3d(0,${lerp(28, 0, Math.min(t * 1.5, 1))}px,0)`;
+      // Interpolate position and scale back to layout defaults (0, 0) and 1.0
+      const tx = roleOffset.x * (1 - t);
+      const ty = roleOffset.y * (1 - t);
+      const scale = lerp(1.15, 1.0, t);
+      roleEl.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+      
+      // Bio fades in and slides up from 28px
+      reveal.style.opacity   = t;
+      reveal.style.transform = `translate3d(0, ${28 * (1 - t)}px, 0)`;
+      reveal.style.pointerEvents = t > 0.15 ? 'auto' : 'none';
+      reveal.style.visibility = t > 0 ? 'visible' : 'hidden';
+      
       hero.classList.add('stage-3');
       if (t > 0.3) document.documentElement.classList.add('header-visible');
     }
@@ -239,6 +292,18 @@ const runCinematicTimeline = () => {
     }
   }, { passive: true });
 
+  window.addEventListener('resize', () => {
+    calculateOffsets();
+    update();
+  });
+
+  window.addEventListener('load', () => {
+    calculateOffsets();
+    update();
+  });
+
+  // Run initial pass
+  calculateOffsets();
   update();
 };
 runCinematicTimeline();
