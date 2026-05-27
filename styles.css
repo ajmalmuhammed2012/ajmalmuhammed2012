@@ -144,14 +144,22 @@ a {
 .menu-toggle { display: none; flex-direction: column; gap: 4px; width: 18px; background: transparent; border: none; }
 .menu-toggle span { width: 100%; height: 1.5px; background-color: var(--ink); }
 
-/* --- HERO STAGING MATRIX (Guarantees Dead Center Alignment) --- */
-.hero {
+/* --- HERO SCROLL TRACK: gives hero 300vh of scroll distance while pinning inner content --- */
+.hero-scroll-track {
   position: relative;
+  height: 300vh;
+}
+
+/* --- HERO STAGING MATRIX (Sticky + Dead Center Alignment) --- */
+.hero {
+  position: sticky;
+  top: 0;
   height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .hero-shade {
@@ -186,35 +194,35 @@ a {
   letter-spacing: -0.04em;
   margin: 0;
   text-align: center;
-  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  /* No CSS transition — JS drives all opacity/transform via rAF for scroll-sync */
+  will-change: opacity, transform;
 }
 
 .hidden-role {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(32px);
 }
 
 .hero-reveal-block {
   opacity: 0;
-  transform: translateY(30px);
   margin-top: 40px;
-  display: none; /* Block layout details are hidden completely until Stage 3 triggers */
+  will-change: opacity, transform;
+  /* display controlled by JS */
 }
 
-/* --- THE THREE CONTINUOUS TIMELINE CSS STATES --- */
-.stage-1 #headline-name { opacity: 1; transform: translateY(0); }
-.stage-1 #headline-role { opacity: 0; transform: translateY(30px); }
-
-.stage-2 #headline-name { opacity: 0; transform: translateY(-30px); }
-.stage-2 #headline-role { opacity: 1; transform: translateY(0); }
-
-.stage-3 #headline-name { display: none; }
-.stage-3 .cinematic-headline-wrapper { min-height: auto; justify-items: start; }
-.stage-3 #headline-role {
-  position: relative; opacity: 1; transform: none;
-  font-size: clamp(2.2rem, 6vw, 4.2rem); text-align: left; letter-spacing: -0.035em;
+/* --- STAGE CLASSES: only structural/layout changes, NO opacity/transform (JS owns those) --- */
+/* Stage 3 shifts the layout from centered to left-aligned editorial style */
+.hero.stage-3 .cinematic-headline-wrapper {
+  min-height: auto;
+  justify-items: start;
+  transition: min-height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.stage-3 .hero-reveal-block { display: block; opacity: 1; transform: translateY(0); }
+.hero.stage-3 #headline-role {
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  text-align: left;
+  letter-spacing: -0.035em;
+  transition: font-size 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
 .hero-copy { max-width: 600px; margin: 0; color: var(--muted); font-size: 1.35rem; line-height: 1.55; }
 

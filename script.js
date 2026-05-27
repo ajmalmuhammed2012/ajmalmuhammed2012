@@ -121,28 +121,87 @@ if (canvas) {
   resizeCanvas(); draw();
 }
 
-// 4. FLOATING SCREEN RATIO DYNAMIC INTERCEPTOR (The True Fix)
+// 4. CINEMATIC SCROLL-DRIVEN HERO TIMELINE
+// Drives the 3-phase hero reveal via scroll progress (0→1) across the 300vh scroll track.
+// All opacity/transform are set via JS+rAF so they're perfectly tied to scroll position.
 const runCinematicTimeline = () => {
-  const hero = document.getElementById('timeline-hero');
-  if (!hero) return;
+  const track    = document.querySelector('.hero-scroll-track');
+  const hero     = document.getElementById('timeline-hero');
+  const nameEl   = document.getElementById('headline-name');
+  const roleEl   = document.getElementById('headline-role');
+  const reveal   = document.querySelector('.hero-reveal-block');
+
+  if (!track || !hero || !nameEl || !roleEl || !reveal) return;
+
+  // Ease-out cubic: motion decelerates into each phase boundary
+  const easeOut  = t => 1 - Math.pow(1 - t, 3);
+  const clamp    = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const lerp     = (a, b, t) => a + (b - a) * t;
+
+  // Phase boundaries (fraction of total scroll progress 0→1)
+  const P1 = 0.33; // name starts fading out
+  const P2 = 0.66; // role is fully visible; content reveal begins
+
+  let ticking = false;
+
+  const update = () => {
+    // Progress within the sticky scroll track
+    const scrollable = track.offsetHeight - window.innerHeight;
+    const raw = -track.getBoundingClientRect().top;
+    const progress = clamp(raw / scrollable, 0, 1);
+
+    if (progress < P1) {
+      // ── PHASE 1: Name fully visible, centered ──────────────────────────
+      nameEl.style.display  = '';
+      nameEl.style.opacity  = 1;
+      nameEl.style.transform = 'translateY(0)';
+      roleEl.style.opacity  = 0;
+      roleEl.style.transform = 'translateY(32px)';
+      reveal.style.display  = 'none';
+      reveal.style.opacity  = 0;
+      hero.classList.remove('stage-3');
+      document.documentElement.classList.remove('header-visible');
+
+    } else if (progress < P2) {
+      // ── PHASE 2: Cross-dissolve name → role ───────────────────────────
+      const t = easeOut((progress - P1) / (P2 - P1)); // 0→1 within phase
+      nameEl.style.display  = '';
+      nameEl.style.opacity  = 1 - t;
+      nameEl.style.transform = `translateY(${lerp(0, -28, t)}px)`;
+      roleEl.style.opacity  = t;
+      roleEl.style.transform = `translateY(${lerp(32, 0, t)}px)`;
+      reveal.style.display  = 'none';
+      reveal.style.opacity  = 0;
+      hero.classList.remove('stage-3');
+      document.documentElement.classList.remove('header-visible');
+
+    } else {
+      // ── PHASE 3: Role stays; content block fades in ───────────────────
+      const t = easeOut((progress - P2) / (1 - P2)); // 0→1 within phase
+      nameEl.style.opacity  = 0;
+      nameEl.style.display  = 'none';
+      roleEl.style.opacity  = 1;
+      roleEl.style.transform = 'translateY(0)';
+      reveal.style.display  = 'block';
+      reveal.style.opacity  = clamp(t * 1.6, 0, 1);
+      reveal.style.transform = `translateY(${lerp(24, 0, t)}px)`;
+      // Stage-3 class only handles layout shift (text-align/font-size), not animation
+      hero.classList.add('stage-3');
+      if (t > 0.35) document.documentElement.classList.add('header-visible');
+    }
+
+    ticking = false;
+  };
 
   window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    
-    // Calculates states based on strict pixel milestones relative to viewport heights
-    if (scrollY <= 120) {
-      if (hero.className !== "hero stage-1") hero.className = "hero stage-1";
-      document.documentElement.classList.remove('header-visible');
-    } 
-    else if (scrollY > 120 && scrollY <= 320) {
-      if (hero.className !== "hero stage-2") hero.className = "hero stage-2";
-      document.documentElement.classList.remove('header-visible');
-    } 
-    else if (scrollY > 320) {
-      if (hero.className !== "hero stage-3") hero.className = "hero stage-3";
-      document.documentElement.classList.add('header-visible');
+    if (!ticking) {
+      requestAnimationFrame(update);
+      ticking = true;
     }
   }, { passive: true });
+
+  // Run once on load to set initial state
+  update();
 };
 runCinematicTimeline();
 
