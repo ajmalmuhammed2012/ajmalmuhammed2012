@@ -47,6 +47,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Page-load fade: hero title slides up gracefully on first visit */
+@keyframes heroEntrance {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.7; } 50% { opacity: 1; }
+}
+
 body {
   margin: 0;
   width: 100%;
@@ -129,8 +138,19 @@ a {
 }
 .brand-main { font-size: 0.85rem; font-weight: 700; }
 .nav-links { display: flex; align-items: center; gap: 32px; }
-.nav-links a { color: var(--ink); opacity: 0.75; font-size: 0.75rem; font-weight: 500; }
+.nav-links a {
+  color: var(--ink); opacity: 0.75; font-size: 0.75rem; font-weight: 500;
+  position: relative;
+  transition: color 0.25s ease, opacity 0.25s ease;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0; width: 0; height: 1px;
+  background: var(--accent);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
 .nav-links a:hover { color: var(--accent); opacity: 1; }
+.nav-links a:hover::after { width: 100%; }
 .header-actions { display: flex; align-items: center; gap: 16px; }
 
 .header-action {
@@ -166,8 +186,9 @@ a {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  /* Ensure hero always renders above subsequent sections (marquee, etc.) */
   z-index: 2;
+  /* Smooth the padding-top shift when stage-3 class is applied */
+  transition: padding-top 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-shade {
@@ -182,6 +203,10 @@ a {
   width: 100%;
   max-width: 1024px;
   padding: 0 24px;
+  /* GPU layer for smooth transform during scroll */
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Rebuilt centering stack for absolute mobile alignment symmetry */
@@ -202,8 +227,15 @@ a {
   letter-spacing: -0.04em;
   margin: 0;
   text-align: center;
-  /* No CSS transition — JS drives all opacity/transform via rAF for scroll-sync */
+  /* JS drives opacity/transform — GPU layer for smooth compositing */
   will-change: opacity, transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* First page-load: name slides up (animation runs once, then JS takes over) */
+#headline-name {
+  animation: heroEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
 }
 
 .hidden-role {
@@ -215,6 +247,8 @@ a {
   opacity: 0;
   margin-top: 40px;
   will-change: opacity, transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   /* display controlled by JS */
 }
 
@@ -250,15 +284,25 @@ a {
 .button {
   font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
   padding: 14px 32px; border-radius: var(--radius-apple); cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.3s ease,
+              border-color 0.3s ease,
+              box-shadow 0.3s ease,
+              color 0.3s ease;
+  will-change: transform;
 }
 .button.primary {
   background: var(--glass); border: 1px solid var(--accent); color: var(--ink);
   box-shadow: 0 4px 16px var(--accent-glow);
 }
-.button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
+.button.primary:hover {
+  background: var(--accent-hover); border-color: var(--accent-hover); color: #fff;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 28px var(--accent-hover-glow);
+}
 .button.secondary { background: rgba(0, 0, 0, 0.02); border: 1px solid var(--glass-border); color: var(--muted); }
-.button.secondary:hover { border-color: var(--accent); color: var(--ink); }
+.button.secondary:hover { border-color: var(--accent); color: var(--ink); transform: translateY(-2px); }
 
 .hero-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 64px; border-top: 1px solid var(--line); padding-top: 28px; }
 .meta-item { display: flex; flex-direction: column; gap: 4px; }
@@ -277,11 +321,21 @@ a {
 .intro-body p { font-size: 1.4rem; color: var(--ink); line-height: 1.55; }
 
 .glass-card {
-  background: var(--glass) !important; border-radius: var(--radius-apple) !important; 
-  border: 1px solid var(--glass-border) !important; backdrop-filter: blur(16px) saturate(120%) !important;
-  box-shadow: var(--card-shadow) !important; transition: all 0.4s ease !important;
+  background: var(--glass) !important;
+  border-radius: var(--radius-apple) !important;
+  border: 1px solid var(--glass-border) !important;
+  backdrop-filter: blur(16px) saturate(120%) !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              box-shadow 0.4s ease !important;
+  will-change: transform;
 }
-.glass-card:hover { border-color: var(--accent) !important; transform: translateY(-4px); }
+.glass-card:hover {
+  border-color: var(--accent) !important;
+  transform: translateY(-6px) scale(1.015) !important;
+  box-shadow: var(--card-shadow), 0 0 40px var(--accent-glow) !important;
+}
 
 .stats-grid, .ai-grid, .skills-grid, .recommendation-grid, .credentials-section { display: grid; gap: 24px; width: 100%; }
 .stats-grid { grid-template-columns: repeat(4, 1fr); }
@@ -336,9 +390,29 @@ a {
 
 /* --- SCROLL REVEAL CONFIGS --- */
 .scroll-reveal { opacity: 1; transform: none; }
-.js-enabled .scroll-reveal { opacity: 0; transform: translateY(24px); }
+.js-enabled .scroll-reveal {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
 .js-enabled .scroll-reveal.reveal-active {
-  opacity: 1; transform: translateY(0); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Staggered cascade for cards inside a revealed section */
+.js-enabled .reveal-active .glass-card {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              box-shadow 0.4s ease !important;
+  /* transitionDelay set per-card by JS (0, 80, 160, 240ms…) */
+}
+.js-enabled .reveal-active.reveal-active .glass-card {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 /* --- MOBILE BREAKPOINTS --- */
